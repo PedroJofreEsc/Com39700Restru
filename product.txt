@@ -1,0 +1,73 @@
+{
+    "title":"prueba",
+    "description": "priuebadescripcion",
+    "code": "pruebacode",
+    "price": 98,
+    "stock": 4,
+    "category": "abc"
+}
+
+{
+    "title":"Platano Kg",
+    "description": "ramo de platano de 1 kg",
+    "code": "PlFr0",
+    "price": 100,
+    "stock": 4,
+    "category": "fruta"
+}
+
+{
+    "title":"Manzana Kg",
+    "description": "Bolsa de manzana de 1 kg",
+    "code": "MaFr0",
+    "price": 120,
+    "stock": 8,
+    "category": "fruta"
+}
+
+
+{
+    "title":"Cereza kg",
+    "description": "Bolsa de cereza de 1 kg",
+    "code": "CeFr0",
+    "price": 110,
+    "stock": 1,
+    "category": "fruta"
+}
+
+{
+    "title":"Durazno kg",
+    "description": "Bolsa de durazno de 1 kg",
+    "code": "DuFr0",
+    "price": 90,
+    "stock": 1,
+    "category": "fruta"
+}
+
+{
+    "title":"Lechuga escalora kg",
+    "description": "Lechuga escalora de 1 kg",
+    "code": "LeVe0",
+    "price": 90,
+    "stock": 1,
+    "category": "Verdura"
+}
+
+{
+    "title":"Tomate kg",
+    "description": "Bolsa de tomate de 1 kg",
+    "code": "ToVe0",
+    "price": 95,
+    "stock": 10,
+    "category": "Verdura"
+}
+
+{
+    "title":"Mesa ping pong",
+    "description": "Mesa de ping-pong pegable, incluye 2 paletas y 1 pelota",
+    "code": "MeRe0",
+    "price": 1000,
+    "stock": 4,
+    "category": "Recreación"
+}
+

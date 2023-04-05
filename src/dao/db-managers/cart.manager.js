@@ -1,4 +1,6 @@
 import cartModel from "../models/cart.model.js";
+import productModel from "../models/product.model.js";
+
 
 export default class CartManager {
   constructor() {
@@ -19,7 +21,8 @@ export default class CartManager {
   }
 
   getCartById = async (id) => {
-    const result = await cartModel.findOne({ _id: id }).lean()
+
+    const result = await cartModel.findOne({ _id: id }).populate("products.product")
     return result
   }
   //por revisar
@@ -63,16 +66,13 @@ export default class CartManager {
   }
 
   deleteProductById = async (cid, pid) => {
-    const cart = await cartModel.findById(cid)
-    for (let index = 0; index < cart.products.length; index++) {
-
-      if (cart.products[index]._id == pid) {
-        const newProducts = cart.products
-        newProducts.filter((p) => { p._id != pid })
-        console.log(newProducts)
-        const newCart = cartModel.findOneAndUpdate({ _id: cid }, newProducts)
-        return newCart
-      };
-    }
+    const product = await cartModel.findOneAndUpdate({ _id: cid }, { $pull: { products: { _id: pid } } })
+    return product
   }
+
+  /*  updateCartById = async (cid, campo) => {
+     const cart = await cartModel.findOneAndUpdate({ _id: cid },
+       {$set{products.$[quantity]}})
+     cart
+   } */
 }

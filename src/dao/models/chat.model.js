@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2"
 const chatSchema = new mongoose.Schema({
     user:
     {
-        type: String,
-        unique: true
+        type: String
+
     },
     message: {
         type: String,
     },
 })
+chatSchema.plugin(mongoosePaginate)
+const chatModel = mongoose.model("messages", chatSchema)
 
-const cartModel = mongoose.model("cart", cartSchema)
-
-export default cartModel
+export default chatModel
 

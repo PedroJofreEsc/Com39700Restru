@@ -9,18 +9,19 @@ productsRouter.use(json());
 productsRouter.get("/", async (req, res) => {
 
 
-    const limit = req.query.limit
-    const page = req.query.page
-    const sort = req.query.limit
-    const query = req.query.query
+    const limit = req.query.limit ? req.query.limit : false
+    const page = req.query.page ? req.query.page : false
+    const sort = req.query.sort ? req.query.sort : false
+    const query = req.query.query ? req.query.query : false
 
 
-    const products = await productManager.getAll();
+    const products = await productManager.getAllPaginate(limit, page, sort, query);
     if (limit) {
         const limitProduct = products.splice(0, limit)
         res.send(limitProduct)
     }
     res.send(products)
+
 
 
 });
@@ -36,6 +37,7 @@ productsRouter.post("/", async (req, res) => {
     try {
         const newProduct = await productManager.create({ title, description, price, code, status, stock, category, thumbnails })
         res.status(200).send({ status: "ok", payload: newProduct })
+
     } catch (error) {
         res.status(400).send({ status: "Error", payload: error })
     }

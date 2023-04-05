@@ -55,8 +55,17 @@ cartsRouter.post("/:cid/product/:pid", async (req, res) => {
         res.status(400).send({ status: "error", payload: error })
     }
 })
+cartsRouter.put("/:cid/product/:pid", (req, res) => {
 
-//nuevos endpoint
+    const { cid, pid } = req.params
+    const { productQuantity } = { ...req.body }
+    //deberá poder actualizar SÓLO la cantidad de ejemplares del producto 
+    //por cualquier cantidad pasada desde req.body
+    const updateCartProduct = cartManager.addProduct(cid, pid, productQuantity)
+
+    res.send(updateCartProduct)
+})
+
 cartsRouter.delete("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params
     //deberá eliminar del carrito el producto seleccionado.
@@ -66,6 +75,8 @@ cartsRouter.delete("/:cid/product/:pid", async (req, res) => {
     res.send(updateCart)
 
 })
+
+//nuevos endpoint
 
 cartsRouter.put("/:cid", async (req, res) => {
     const { cid } = req.params
@@ -78,19 +89,5 @@ cartsRouter.put("/:cid", async (req, res) => {
     res.send(updateCart)
 
 })
-
-cartsRouter.put("/:cid/product/:pid", (req, res) => {
-
-    const { cid, pid } = req.params
-    const { productQuantity } = { ...req.body }
-    console.log(productQuantity)
-    //deberá poder actualizar SÓLO la cantidad de ejemplares del producto 
-    //por cualquier cantidad pasada desde req.body
-    const updateCartProduct = cartManager.addProduct(cid, pid, productQuantity)
-
-    res.send(updateCartProduct)
-})
-
-
 
 export default cartsRouter

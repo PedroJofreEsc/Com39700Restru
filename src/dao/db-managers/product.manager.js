@@ -4,7 +4,19 @@ export default class ProductManager {
   constructor() {
 
   }
+  getAllPaginate = async (limit, page, query, sort) => {
 
+
+    const products = await productModel.paginate({}
+
+      , {
+        limit: limit ? limit : 20,
+        page: page ? page : 1,
+        sort: sort ? { price: sort } : false
+
+      })
+    return products;
+  }
   getAll = async () => {
     const products = await productModel.find().lean();
 

@@ -1,4 +1,6 @@
 <p>products</p>
+<p>Bienvenido {{rol}} {{user.first_name}} {{user.last_name}} </p>
+
 
 <div>
 
@@ -11,4 +13,9 @@
     </ul>
     {{/each}}
 
+</div>
+<div>
+    <form method="post" action="/api/sessions/logout">
+        <button type="submit">log out<output></output></button>
+    </form>
 </div>

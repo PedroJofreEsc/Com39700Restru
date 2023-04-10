@@ -1,18 +1,37 @@
 import express, { urlencoded } from "express";
 import { engine } from "express-handlebars";
 import mongoose from "mongoose";
+import { Server } from "socket.io";
+import path from "path";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+
+import ChatManager from "./dao/db-managers/chat.manager.js";
+import __dirname from "./utils.js";
 import cartsRouter from './routes/cart.router.js';
 import productsRouter from './routes/product.router.js';
 import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
-import __dirname from "./utils.js";
-import { Server } from "socket.io";
-import ChatManager from "./dao/db-managers/chat.manager.js";
-const app = express()
+import AuthRouter from './routes/auth.router.js'
 
+const app = express()
+const port = 8080
+const database = 'mongodb+srv://coder:123asd@cluster0.ovoauzl.mongodb.net/ecommerce?retryWrites=true&w=majority'
+
+//middlewares
 app.use(express.json())
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
+
+//session
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: database,
+  }),
+  secret: "claveSecreta",
+  resave: true,
+  saveUninitialized: true
+}))
 
 // Handlebars
 app.engine("handlebars", engine());
@@ -24,33 +43,35 @@ app.use("/", viewRouter)
 app.use("/api/carts", cartsRouter)
 app.use("/api/products", productsRouter)
 app.use("/chat", chatRouter)
+app.use("/api/sessions", AuthRouter)
 
 
 
-mongoose.connect('mongodb+srv://coder:123asd@cluster0.ovoauzl.mongodb.net/ecommerce?retryWrites=true&w=majority')
-    .then((conn) => {
-        console.log("conectado a DB")
-    })
-const httpServer = app.listen(8080, () => {
-    console.log("Server listening on port 8080");
+mongoose.connect(database)
+  .then((conn) => {
+    console.log("conectado a DB")
+  })
+
+const httpServer = app.listen(port, () => {
+  console.log("Server listening on port 8080");
 });
 
 const chatManager = new ChatManager()
 
 const io = new Server(httpServer);
 io.on("connection", (socket) => {
-    socket.on("chat-message", async (data) => {
-        await chatManager.create(data)
-        console.log(data)
-        const messages = await chatManager.getAll()
-        io.emit("messages", messages)
-    })
+  socket.on("chat-message", async (data) => {
+    await chatManager.create(data)
+    console.log(data)
+    const messages = await chatManager.getAll()
+    io.emit("messages", messages)
+  })
 
-    socket.on("new-user", async (username) => {
-        const messages = await chatManager.getAll()
-        socket.emit("messages", messages);
-        socket.broadcast.emit("new-user", username)
-    })
+  socket.on("new-user", async (username) => {
+    const messages = await chatManager.getAll()
+    socket.emit("messages", messages);
+    socket.broadcast.emit("new-user", username)
+  })
 
     /* socket.on("message", (data) => {
       console.log(data);

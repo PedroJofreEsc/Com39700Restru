@@ -17,8 +17,7 @@ chatInput.addEventListener("keyup", (ev) => {
 
 
         if (inputMessage.trim().length > 0) {
-            console.log("index")
-            console.log(userName)
+
             socket.emit("chat-message", { user: userName, message: inputMessage })
             chatInput.value = ""
         }

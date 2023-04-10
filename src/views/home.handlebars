@@ -1,0 +1,18 @@
+<H1>Home</H1>
+
+<p>Bienvenido a tu sesion </p>
+
+
+<div>
+    <ul>
+        <li>nombre:{{user.first_name}} </li>
+        <li>apellido:{{user.last_name}} </li>
+
+    </ul>
+</div>
+
+<div>
+    <form method="post" action="/api/sessions/logout">
+        <button type="submit">log out<output></output></button>
+    </form>
+</div>

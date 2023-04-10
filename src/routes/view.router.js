@@ -39,23 +39,46 @@ router.get("/carts/:cid", async (req, res) => {
 });
 
 //login view
-router.get("/", (req, res) => {
-    res.render("home");
+router.get("/", async (req, res) => {
+    const email = req.session.user
+    if (email) {
+
+        const user = await UserModel.findOne({ email: email }).lean()
+        return res.render("home", { user });
+    }
+    res.redirect("/login")
 });
 
 router.get("/login", (req, res) => {
+    const email = req.session.user
+
+    if (email) {
+        return res.send("session ya iniciada")
+    }
+
+
     res.render("login");
 });
 
 router.get("/signup", (req, res) => {
+    const email = req.session.user
+
+    if (email) {
+        return res.send("session ya iniciada")
+    }
     res.render("signup");
 });
 
-router.get("/perfil", (req, res) => {
-    console.log(req.session.user);
+router.get("/perfil", async (req, res) => {
+
     const email = req.session.user
-    const user = UserModel.findOne({ email: email })
-    res.render("perfil", { user });
+    if (email) {
+        const user = await UserModel.findOne({ email: email }).lean()
+        const rol = req.session.rol
+
+        return res.render("perfil", { user, rol });
+    }
+    res.redirect("/login")
 });
 
 

@@ -1,0 +1,21 @@
+<H1>Perfil</H1>
+
+<p>Bienvenido a tu perfil </p>
+
+<p>datos</p>
+<div>
+    <ul>
+        <li>nombre:{{user.first_name}} </li>
+        <li>apellido:{{user.last_name}} </li>
+        <li>edad:{{user.age}} </li>
+        <li>email:{{user.email}} </li>
+        <li>rol:{{rol}} </li>
+
+    </ul>
+</div>
+
+<div>
+    <form method="post" action="/api/sessions/logout">
+        <button type="submit">log out<output></output></button>
+    </form>
+</div>

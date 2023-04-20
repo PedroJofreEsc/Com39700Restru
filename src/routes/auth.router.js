@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { UserModel } from '../dao/models/user.model.js';
+import { createHash } from "../utils.js";
 
 const router = Router()
 
 router.post("/signup", async (req, res) => {
-    console.log(req.session.user)
+
     try {
         const { first_name, last_name, email, age, password } = req.body
         const user = await UserModel.findOne({ email: email })
@@ -15,6 +16,8 @@ router.post("/signup", async (req, res) => {
 
             const isAdmin = admin.test(email)
             let rol
+
+
             if (isAdmin) {
                 rol = "admin"
 
@@ -22,9 +25,13 @@ router.post("/signup", async (req, res) => {
                 rol = "usuario"
 
             }
-            console.log(rol)
-            const newUser = UserModel.create({ first_name, last_name, email, age, password })
-            req.session.user = newUser.email
+
+            const newUser = {
+                first_name, last_name, email, age,
+                password: createHash(password)
+            }
+            const userCreated = UserModel.create(newUser)
+            req.session.user = userCreated.email
             req.session.rol = rol
             return res.redirect("/products")
         } res.send(`Usuario ya registrado <a href="/login">Incia sesion</a>`);

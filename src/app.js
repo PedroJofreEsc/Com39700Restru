@@ -94,3 +94,4 @@ io.on("connection", (socket) => {
     //   socket.emit("message", "Información actualizada");
     // }, 1000);
    */});
+//autentificacion github datos app

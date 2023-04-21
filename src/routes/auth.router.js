@@ -1,10 +1,34 @@
 import { Router } from "express";
 import { UserModel } from '../dao/models/user.model.js';
-import { createHash } from "../utils.js";
-
+import { createHash, isValidPassword } from "../utils.js";
+import passport from "passport";
 const router = Router()
 
-router.post("/signup", async (req, res) => {
+//passport
+router.post("/signup", passport.authenticate("signupStrategy", {
+    failureRedirect: "/failure-singup"
+}), async (req, res) => {
+    req.session.user = req.user;
+    req.session.username = req.session.user.email;
+    let rol
+    const admin = /@coder.com,/
+    const isAdmin = admin.test(req.user)
+    if (isAdmin) {
+        rol = "admin"
+
+    } else {
+        rol = "usuario"
+    }
+    req.session.rol = rol
+    res.send("usuario registrado")
+})
+
+router.get("/failure-singup", (req, res) => {
+    res.send("no fue posible logearse")
+})
+
+//original
+/* router.post("/signup", async (req, res) => {
 
     try {
         const { first_name, last_name, email, age, password } = req.body
@@ -40,18 +64,19 @@ router.post("/signup", async (req, res) => {
         res.status(401).send(e)
     }
 })
+*/
 
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body
         const user = await UserModel.findOne({ email: email })
         if (user) {
-            if (user.password === password) {
+            if (isValidPassword(user, password)) {
 
-                //si existe el usuario lo registramos
+                //si existe el usuario 
                 req.session.user = user.email;
                 let rol
-                const admin = /adminCoder@coder.com,/
+                const admin = /@coder.com,/
                 const isAdmin = admin.test(email)
                 if (isAdmin) {
                     rol = "admin"
@@ -79,5 +104,23 @@ router.post("/logout", async (req, res) => {
     req.session.destroy()
     return res.redirect("/login")
 })
+
+//crear vista
+router.post("/forgot", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (user) {
+            user.password = createHash(password);
+            const userUpdate = await UserModel.findOneAndUpdate({ email: user.email }, user);
+            res.send("contraseña actualizada");
+        } else {
+            req.send("El usuario no esta registrado")
+        }
+    } catch (error) {
+        res.send("No se pudo restaurar la contraseña")
+    }
+});
+
 
 export default router

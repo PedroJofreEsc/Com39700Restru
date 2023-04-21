@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import passport from "passport";
 
 import ChatManager from "./dao/db-managers/chat.manager.js";
 import __dirname from "./utils.js";
@@ -13,7 +14,7 @@ import productsRouter from './routes/product.router.js';
 import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
 import AuthRouter from './routes/auth.router.js'
-
+import { initializedPassport } from "./config/passport.config.js";
 const app = express()
 const port = 8080
 const database = 'mongodb+srv://coder:123asd@cluster0.ovoauzl.mongodb.net/ecommerce?retryWrites=true&w=majority'
@@ -32,6 +33,11 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
+
+//passport
+initializedPassport();
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Handlebars
 app.engine("handlebars", engine());

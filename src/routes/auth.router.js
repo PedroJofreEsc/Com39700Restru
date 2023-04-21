@@ -6,7 +6,7 @@ const router = Router()
 
 //passport
 router.post("/signup", passport.authenticate("signupStrategy", {
-    failureRedirect: "/failure-singup"
+    failureRedirect: "/api/sessions/failure-singup"
 }), async (req, res) => {
     req.session.user = req.user;
     req.session.username = req.session.user.email;
@@ -65,6 +65,18 @@ router.get("/failure-singup", (req, res) => {
     }
 })
 */
+
+router.get("/github", passport.authenticate("githubSignup", { scope: ["user:email"] }, async (req, res) => {
+
+}))
+
+router.get("/github-callback",
+    passport.authenticate("githubSignup", {
+        failureRedirect: "/api/sessions/failure-singup"
+    }), (req, res) => {
+        console.log(req.session.user);
+        res.send("usuario autentificado")
+    })
 
 router.post("/login", async (req, res) => {
     try {

@@ -1,32 +1,12 @@
 import { Router, json } from "express";
-//import { ProductManager } from '../dao/index.js';
-import { ProductManager } from "../dao/index.js";
+import { ProductController } from "../controller/product.controller.js";
 
 const productsRouter = Router();
-const productManager = new ProductManager
 productsRouter.use(json());
 
-productsRouter.get("/", async (req, res) => {
+productsRouter.get("/", ProductController.getProducts);
 
-
-    const limit = req.query.limit ? req.query.limit : false
-    const page = req.query.page ? req.query.page : false
-    const sort = req.query.sort ? req.query.sort : false
-    const query = req.query.query ? req.query.query : false
-
-
-    const products = await productManager.getAllPaginate(limit, page, sort, query);
-    if (limit) {
-        const limitProduct = products.splice(0, limit)
-        res.send(limitProduct)
-    }
-    res.send(products)
-
-
-
-});
-
-productsRouter.post("/", async (req, res) => {
+/* productsRouter.post("/", async (req, res) => {
 
     const { title, description, price, code, status, stock, category, thumbnails } = { ...req.body }
 
@@ -89,6 +69,6 @@ productsRouter.get("/real-time-products", async (req, res) => {
 })
 
 
-
+ */
 
 export default productsRouter

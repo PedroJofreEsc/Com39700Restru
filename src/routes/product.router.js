@@ -8,6 +8,7 @@ productsRouter.get("/", ProductController.getProducts);
 
 productsRouter.post("/", ProductController.addProduct)
 
+productsRouter.get("/realTimeProducts", ProductController.realTimeProducts)
 
 productsRouter.get("/:pid", ProductController.getProductById)
 
@@ -15,6 +16,5 @@ productsRouter.delete("/:pid", ProductController.deleteProduct)
 
 productsRouter.put("/:pid", ProductController.updateProduct)
 
-productsRouter.get("/real-time-products", ProductController.realTimeProducts)
 
 export default productsRouter

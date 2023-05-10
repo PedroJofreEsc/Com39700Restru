@@ -74,8 +74,11 @@ class ProductController {
     }
 
     static realTimeProducts = async (req, res) => {
-        const products = await ProductService.get
-        //res.render(, { products })
+
+        const products = await ProductService.get()
+
+
+        res.render("products", { products })
     }
 
 }

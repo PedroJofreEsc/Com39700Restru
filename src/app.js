@@ -15,9 +15,11 @@ import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
 import AuthRouter from './routes/auth.router.js'
 import { initializedPassport } from "./config/passport.config.js";
+import { option } from './config/option.js'
+
 const app = express()
-const port = 8080
-const database = 'mongodb+srv://coder:123asd@cluster0.ovoauzl.mongodb.net/ecommerce?retryWrites=true&w=majority'
+const port = option.server.port
+const database = option.mongoDB.url
 
 //middlewares
 app.use(express.json())
@@ -29,9 +31,9 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: database,
   }),
-  secret: "claveSecreta",
+  secret: option.server.secretToken,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: false
 }))
 
 //passport

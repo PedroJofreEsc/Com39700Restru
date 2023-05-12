@@ -3,119 +3,29 @@ import { UserModel } from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from "../utils.js";
 import passport from "passport";
 const router = Router()
+import { UserController } from "../controller/user.controller.js";
+import { option } from "../config/option.js";
+import jwt from "jsonwebtoken";
+import UserManager from "../dao/db-managers/user.manager.js";
+const userManager = new UserManager()
 
 //passport
-router.post("/signup", passport.authenticate("signupStrategy", {
-    failureRedirect: "/api/sessions/failure-singup"
-}), async (req, res) => {
-    req.session.user = req.user;
-    req.session.username = req.session.user.email;
-    let rol
-    const admin = /@coder.com,/
-    const isAdmin = admin.test(req.user)
-    if (isAdmin) {
-        rol = "admin"
+router.post("/signup", UserController.signUp)
 
-    } else {
-        rol = "usuario"
-    }
-    req.session.rol = rol
-    res.send("usuario registrado")
-})
+
 
 router.get("/failure-singup", (req, res) => {
     res.send("no fue posible logearse")
 })
 
-//original
-/* router.post("/signup", async (req, res) => {
 
-    try {
-        const { first_name, last_name, email, age, password } = req.body
-        const user = await UserModel.findOne({ email: email })
+router.get("/github", UserController.github)
 
-        if (!user) {
-            //chequear si es admin 
-            const admin = /@coder.com/
+router.get("/github-callback", UserController.githubCallback, UserController.githubCallbackNext)
 
-            const isAdmin = admin.test(email)
-            let rol
+router.post("/login", UserController.logIn)
 
-
-            if (isAdmin) {
-                rol = "admin"
-
-            } else {
-                rol = "usuario"
-
-            }
-
-            const newUser = {
-                first_name, last_name, email, age,
-                password: createHash(password)
-            }
-            const userCreated = UserModel.create(newUser)
-            req.session.user = userCreated.email
-            req.session.rol = rol
-            return res.redirect("/products")
-        } res.send(`Usuario ya registrado <a href="/login">Incia sesion</a>`);
-    } catch (e) {
-        console.log(e)
-        res.status(401).send(e)
-    }
-})
-*/
-
-router.get("/github", passport.authenticate("githubSignup", { scope: ["user:email"] }, async (req, res) => {
-
-}))
-
-router.get("/github-callback",
-    passport.authenticate("githubSignup", {
-        failureRedirect: "/api/sessions/failure-singup"
-    }), (req, res) => {
-        console.log(req.session.user);
-        res.send("usuario autentificado")
-    })
-
-router.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body
-        const user = await UserModel.findOne({ email: email })
-        if (user) {
-            if (isValidPassword(user, password)) {
-
-                //si existe el usuario 
-                req.session.user = user.email;
-                let rol
-                const admin = /@coder.com,/
-                const isAdmin = admin.test(email)
-                if (isAdmin) {
-                    rol = "admin"
-
-                } else {
-                    rol = "usuario"
-
-                }
-                req.session.rol = rol
-                // res.send("usuario logueado");
-                return res.redirect("/products");
-            }
-            res.send(`Contraseña equivocada intente de nuevo <a href="/signup">crear usuario</a>`)
-        }
-        res.send(`Usuario no registrado <a href="/signup">crear usuario</a>`)
-
-    }
-    catch (e) {
-        res.status(400).send(e)
-    }
-})
-
-router.post("/logout", async (req, res) => {
-    console.log("signout")
-    req.session.destroy()
-    return res.redirect("/login")
-})
+router.post("/logout", UserController.logOut)
 
 //crear vista
 router.post("/forgot", async (req, res) => {

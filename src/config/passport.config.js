@@ -3,14 +3,36 @@ import LocalStrategy from "passport-local"
 import GithubStrategy from "passport-github2"
 import { UserModel } from "../dao/models/user.model.js"
 import { createHash, isValidPassword } from "../utils.js"
+import jwt from "passport-jwt"
+import { option } from "./option.js"
+const jwtStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt
 
 const initializedPassport = () => {
+    //estrategia passport jwt
+    passport.use("authJWT", new jwtStrategy(
+        {//extraer token
+            jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+            secretOrKey: option.server.secretToken
+
+        },
+        async (jwt_payload, done) => {
+            try {
+                return done(null, jwt_payload)
+            } catch (error) {
+                return done(error)
+            }
+        }
+    )
+    )
+    //antiguo
     passport.use("signupStrategy", new LocalStrategy(
         {
             usernameField: "email",
             passReqToCallback: true
         },
         async (req, username, password, done) => {
+            console.log("pasport")
             try {
                 const { first_name, last_name, email, age } = req.body;
                 const user = await UserModel.findOne({ email: username });
@@ -40,6 +62,7 @@ const initializedPassport = () => {
                 const userCreated = await UserModel.create(newUser);
                 return done(null, userCreated);
             } catch (error) {
+                console.log(error)
                 return done(error);
             }
         }
@@ -53,7 +76,6 @@ const initializedPassport = () => {
         }, async (req) => { }
     )
     )
-
     //github login
     passport.use("githubSignup", new GithubStrategy(
         {
@@ -94,3 +116,12 @@ const initializedPassport = () => {
 }
 
 export { initializedPassport }
+
+
+export const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies[options.server.cookieToken]
+    }
+    return token
+}

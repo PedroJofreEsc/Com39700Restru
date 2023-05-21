@@ -21,7 +21,7 @@ class ProductController {
 
         if (!productDto.title || !productDto.description || !productDto.price || !productDto.code || !productDto.stock || !productDto.category) {
 
-            return res.status(400).send({ status: "error", payload: "falta informacion title o description o price o code o category o stock)" })
+            return res.status(400).send({ status: "error", payload: "falta informacion title, description, price, code, category o stock)" })
         }
         try {
 

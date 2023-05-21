@@ -8,7 +8,7 @@ export class CreateProductDto {
     }
 
 }
-
+//no es necesario 
 export class GetProductDto {
     constructor(productDB) {
         this.title = productDB.title

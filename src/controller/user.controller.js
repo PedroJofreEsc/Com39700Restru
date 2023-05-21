@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 import UserManager from "../dao/db-managers/user.manager.js";
 const userManager = new UserManager()
 import { option } from "../config/option.js";
+import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 
 class UserController {
 
@@ -14,9 +15,9 @@ class UserController {
 
             const { email, password } = req.body
             const user = await userManager.getUserEmail(email)
-            console.log(user)
+            const userDto = new GetUserDto(user)
             if (user) {
-                console.log(user)
+
                 //chequear clave 
                 if (isValidPassword(user, password)) {
 
@@ -30,7 +31,7 @@ class UserController {
                         option.server.secretToken, { expiresIn: "24h" });
                     res.cookie(option.server.cookieToken, token, {
                         httpOnly: true
-                    }).redirect("/products");
+                    }).send({ status: "ok", payload: userDto }).redirect("/products");
                 } else {
                     res.send({ status: "error", payload: "clave incorrecta" })
                 }
@@ -44,7 +45,7 @@ class UserController {
 
     static signUp = async (req, res) => {
         try {
-            const { first_name, last_name, email, age, password } = req.body;
+            const userDto = new CreateUserDto(req.body)
             //chequear que no exista otro correo
             const user = await userManager.getUserEmail(email)
             if (user) {
@@ -53,18 +54,16 @@ class UserController {
                 let role
                 const admin = new RegExp(option.admin.adminEmail)
                 const isAdmin = admin.test(email)
-                console.log(isAdmin)
+
                 if (isAdmin) {
                     role = "admin"
-
                 } else {
-                    role = "usuario"
+                    role = "user"
                 }
-                const newuser = {
-                    first_name, last_name, email, age, role,
-                    password: createHash(password)
-                }
-                const userCreated = await userManager.addUser(newuser)
+                userDto.role = role
+                userDto.password = createHash(password)
+
+                const userCreated = await userManager.addUser(userDto)
                 const token = jwt.sign({
                     _id: userCreated._id,
                     first_name: userCreated.first_name,
@@ -77,10 +76,11 @@ class UserController {
 
                 res.cookie(option.server.cookieToken, token, {
                     httpOnly: true
-                }).send(userCreated)
+                }).send({ status: "ok", payload: userCreated })
             }
         } catch (error) {
-            res.send({ staus: "error", payload: error })
+            res.send({ staus: "error", payload: "error al registrarse" })
+            console.log(error.message)
         }
     }
 

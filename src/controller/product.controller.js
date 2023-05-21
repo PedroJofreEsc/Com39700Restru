@@ -1,5 +1,5 @@
 import { ProductService } from "../service/product.service.js";
-
+import { CreateProductDto, GetProductDto } from "../dao/dto/products.dto.js"
 class ProductController {
     static getProducts = async (req, res) => {
         const limit = req.query.limit ? req.query.limit : false
@@ -17,16 +17,15 @@ class ProductController {
     }
 
     static addProduct = async (req, res) => {
+        const productDto = new CreateProductDto(req.body)
 
-        const { title, description, price, code, status, stock, category, thumbnails } = { ...req.body }
-
-        if (!title || !description || !price || !code || !stock || !category) {
+        if (!productDto.title || !productDto.description || !productDto.price || !productDto.code || !productDto.stock || !productDto.category) {
 
             return res.status(400).send({ status: "error", payload: "falta informacion title o description o price o code o category o stock)" })
         }
         try {
 
-            const newProduct = await ProductService.create(title, description, price, code, status, stock, category, thumbnails)
+            const newProduct = await ProductService.create(productDto)
             res.status(200).send({ status: "ok", payload: newProduct })
 
         } catch (error) {

@@ -6,7 +6,7 @@ import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-
+import cookieParser from "cookie-parser";
 import ChatManager from "./dao/db-managers/chat.manager.js";
 import __dirname from "./utils.js";
 import cartsRouter from './routes/cart.router.js';
@@ -40,7 +40,7 @@ app.use(session({
 initializedPassport();
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use(cookieParser());
 // Handlebars
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");

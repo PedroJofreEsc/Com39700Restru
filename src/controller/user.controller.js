@@ -11,11 +11,12 @@ import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 class UserController {
 
     static logIn = async (req, res) => {
+
         try {
 
             const { email, password } = req.body
             const user = await userManager.getUserEmail(email)
-            const userDto = new GetUserDto(user)
+
             if (user) {
 
                 //chequear clave 
@@ -24,36 +25,40 @@ class UserController {
                     const token = jwt.sign({
                         _id: user._id,
                         first_name: user.first_name,
-                        last_name: userCreated.last_name,
+                        last_name: user.last_name,
                         email: user.email,
                         role: user.role
                     },
                         option.server.secretToken, { expiresIn: "24h" });
-                    res.cookie(option.server.cookieToken, token, {
+                    return res.cookie(option.server.cookieToken, token, {
                         httpOnly: true
-                    }).send({ status: "ok", payload: userDto }).redirect("/products");
+                    }).redirect("/products");
                 } else {
-                    res.send({ status: "error", payload: "clave incorrecta" })
+                    res.status(400).send({ status: "error", payload: "clave incorrecta" })
                 }
 
+            } else {
+                res.status(400).send({ status: "error", payload: "usuario no encontrado" })
             }
         }
         catch (e) {
             res.status(400).send(e)
+            console.log(e.message)
         }
     }
 
     static signUp = async (req, res) => {
         try {
             const userDto = new CreateUserDto(req.body)
+
             //chequear que no exista otro correo
-            const user = await userManager.getUserEmail(email)
+            const user = await userManager.getUserEmail(userDto.email)
             if (user) {
                 res.send("usuario ya creado porfavor logearse")
             } else {
                 let role
                 const admin = new RegExp(option.admin.adminEmail)
-                const isAdmin = admin.test(email)
+                const isAdmin = admin.test(userDto.email)
 
                 if (isAdmin) {
                     role = "admin"
@@ -61,7 +66,7 @@ class UserController {
                     role = "user"
                 }
                 userDto.role = role
-                userDto.password = createHash(password)
+                userDto.password = createHash(userDto.password)
 
                 const userCreated = await userManager.addUser(userDto)
                 const token = jwt.sign({

@@ -1,10 +1,11 @@
 import { Router, json } from "express";
 import { ProductController } from "../controller/product.controller.js";
-
+import { rolCheck } from "../midleware/rolCheck.js";
+import { authenticate } from "../midleware/authenticate.js";
 const productsRouter = Router();
 productsRouter.use(json());
 
-productsRouter.get("/", ProductController.getProducts);
+productsRouter.get("/", authenticate("authJWT"), rolCheck("admin"), ProductController.getProducts);
 
 productsRouter.post("/", ProductController.addProduct)
 

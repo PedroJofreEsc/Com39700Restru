@@ -38,7 +38,7 @@ class UserService {
                     first_name: user.first_name,
                     last_name: user.last_name,
                     email: user.email,
-                    rol: user.rol
+                    role: user.role
                 }, option.server.secretToken,
                     { expiresIn: "24h" });
                 //si existe el usuario 

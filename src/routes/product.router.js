@@ -7,15 +7,15 @@ productsRouter.use(json());
 
 productsRouter.get("/", authenticate("authJWT"), rolCheck("admin"), ProductController.getProducts);
 
-productsRouter.post("/", ProductController.addProduct)
+productsRouter.post("/", authenticate("authJWT"), rolCheck("admin"), ProductController.addProduct)
 
 productsRouter.get("/realTimeProducts", ProductController.realTimeProducts)
 
 productsRouter.get("/:pid", ProductController.getProductById)
 
-productsRouter.delete("/:pid", ProductController.deleteProduct)
+productsRouter.delete("/:pid", authenticate("authJWT"), rolCheck("admin"), ProductController.deleteProduct)
 
-productsRouter.put("/:pid", ProductController.updateProduct)
+productsRouter.put("/:pid", authenticate("authJWT"), rolCheck("admin"), ProductController.updateProduct)
 
 
 export default productsRouter

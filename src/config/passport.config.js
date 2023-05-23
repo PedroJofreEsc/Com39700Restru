@@ -7,7 +7,7 @@ import jwt from "passport-jwt"
 import { option } from "./option.js"
 const jwtStrategy = jwt.Strategy
 const ExtractJWT = jwt.ExtractJwt
-console
+
 const initializedPassport = () => {
     //estrategia passport jwt
     passport.use("authJWT", new jwtStrategy(

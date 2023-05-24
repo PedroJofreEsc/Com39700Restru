@@ -20,7 +20,10 @@ const cartSchema = new mongoose.Schema({
     },
 })
 
-cartSchema.plugin(mongoosePaginate)
+
+cartSchema.pre("findOne", function () {
+    this.populate("products.product");
+});
 const cartModel = mongoose.model("carts", cartSchema)
 
 export default cartModel

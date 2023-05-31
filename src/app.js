@@ -15,6 +15,7 @@ import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
 import AuthRouter from './routes/auth.router.js'
 import mockRouter from "./routes/mock.router.js";
+import { errorHandler } from "./midleware/errorHandler.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
 
@@ -26,6 +27,7 @@ const database = option.mongoDB.url
 app.use(express.json())
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
+
 
 //session
 app.use(session({
@@ -46,7 +48,7 @@ app.use(cookieParser());
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
-
+app.use(errorHandler)
 //routes
 app.use("/", viewRouter)
 app.use("/api/carts", cartsRouter)

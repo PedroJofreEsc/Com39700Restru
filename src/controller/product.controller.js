@@ -1,5 +1,8 @@
 import { ProductService } from "../service/product.service.js";
 import { CreateProductDto, GetProductDto } from "../dao/dto/products.dto.js"
+import { CustomError } from "../service/ErrorService/customError.service.js";
+import { generateParamErrorInfo } from "../service/ErrorService/paramErrorInfo.js";
+import { EError } from "../enums/EError.js";
 class ProductController {
     static getProducts = async (req, res) => {
         const limit = req.query.limit ? req.query.limit : false
@@ -19,10 +22,49 @@ class ProductController {
     static addProduct = async (req, res) => {
         const productDto = new CreateProductDto(req.body)
 
+        //chequear parametros correctos
+        let badParam = {}
+        let expectedParam = []
+        if (!productDto.title) {
+            badParam.title = typeof productDto.title
+            expectedParam.push("string")
+        }
+        if (!productDto.description) {
+            badParam.title = typeof productDto.description
+            expectedParam.push("string")
+        }
+        if (!productDto.price) {
+            badParam.title = typeof productDto.price
+            expectedParam.push("number")
+        }
+        if (!productDto.code) {
+            badParam.title = typeof productDto.code
+            expectedParam.push("string")
+        }
+        if (!productDto.stock) {
+            badParam.title = typeof productDto.stock
+            expectedParam.push("number")
+        }
+        if (!productDto.category) {
+            badParam.title = typeof productDto.category
+            expectedParam.push("string")
+        }
+
+        if (expectedParam.length > 0) {
+            CustomError.createError({
+                name: "Product create error",
+                cause: generateParamErrorInfo(badParam, expectedParam),
+                message: "error a crear producto",
+                errorCode: EError.INVALID_PARAM,
+            })
+
+        }
+
         if (!productDto.title || !productDto.description || !productDto.price || !productDto.code || !productDto.stock || !productDto.category) {
 
             return res.status(400).send({ status: "error", payload: "falta informacion title, description, price, code, category o stock)" })
         }
+        ////////////////
         try {
 
             const newProduct = await ProductService.create(productDto)

@@ -84,7 +84,6 @@ class CartController {
             const { cid } = req.params
 
             const buyer = req.user.email
-            console.log(buyer)
 
 
             const ticket = await CartService.purchase(cid, buyer)

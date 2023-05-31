@@ -18,4 +18,14 @@ productsRouter.delete("/:pid", authenticate("authJWT"), rolCheck("admin"), Produ
 productsRouter.put("/:pid", authenticate("authJWT"), rolCheck("admin"), ProductController.updateProduct)
 
 
+
+
+
+
+
+
+
+
+
+
 export default productsRouter

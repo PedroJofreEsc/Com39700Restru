@@ -80,6 +80,9 @@ class ProductController {
         res.render("products", { products })
     }
 
+    //////mock
+
+
 }
 
 export { ProductController }

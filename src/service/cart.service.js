@@ -96,7 +96,7 @@ class CartService {
                 for (let i = 0; i < cartIdProducts.length; i++) {
                     console.log(i)
                     //const updateCart = await cartManager.updateCartById(id, cartIdProducts[i], cartQuantity[i])
-                    //console.log(updateCart)
+
                     const updateProduct = await productManager.updateQty(cartIdProducts[i], productsQty[i])
 
                 }

@@ -14,6 +14,7 @@ import productsRouter from './routes/product.router.js';
 import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
 import AuthRouter from './routes/auth.router.js'
+import mockRouter from "./routes/mock.router.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
 
@@ -52,6 +53,8 @@ app.use("/api/carts", cartsRouter)
 app.use("/api/products", productsRouter)
 app.use("/chat", chatRouter)
 app.use("/api/sessions", AuthRouter)
+app.use("/api/mock", mockRouter)
+
 
 
 

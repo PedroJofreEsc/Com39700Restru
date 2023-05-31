@@ -22,12 +22,14 @@ export default class CartManager {
 
   getCartById = async (id) => {
 
-    const result = await cartModel.findOne({ _id: id }).populate("products.product")
+    const result = await cartModel.find({ _id: id }).lean()
+
     return result
   }
   //por revisar
   addProduct = async (cid, pid, quantity = 1) => {
     const cart = await cartModel.findById(cid)
+
     //esto funciona
     for (let index = 0; index < cart.products.length; index++) {
 
@@ -70,9 +72,17 @@ export default class CartManager {
     return product
   }
 
-  /*  updateCartById = async (cid, campo) => {
-     const cart = await cartModel.findOneAndUpdate({ _id: cid },
-       {$set{products.$[quantity]}})
-     cart
-   } */
+  updateCartById = async (cid, pid, qty) => {
+    const cart = await cartModel.findById(cid).lean()
+    console.log(cart.products)
+    for (let index = 0; index < cart.products.length; index++) {
+
+      if (cart.products[index]._id.valueOf() == pid) {
+        cart.products[index].quantity = qty;
+        await cart.save();
+        return await cartModel.findById(cid)
+      };
+    }
+
+  }
 }

@@ -6,7 +6,7 @@ import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-
+import cookieParser from "cookie-parser";
 import ChatManager from "./dao/db-managers/chat.manager.js";
 import __dirname from "./utils.js";
 import cartsRouter from './routes/cart.router.js';
@@ -14,6 +14,8 @@ import productsRouter from './routes/product.router.js';
 import chatRouter from "./routes/chat.router.js";
 import viewRouter from './routes/view.router.js';
 import AuthRouter from './routes/auth.router.js'
+import mockRouter from "./routes/mock.router.js";
+import { errorHandler } from "./midleware/errorHandler.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
 
@@ -25,6 +27,7 @@ const database = option.mongoDB.url
 app.use(express.json())
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
+
 
 //session
 app.use(session({
@@ -40,18 +43,20 @@ app.use(session({
 initializedPassport();
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use(cookieParser());
 // Handlebars
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
-
+app.use(errorHandler)
 //routes
 app.use("/", viewRouter)
 app.use("/api/carts", cartsRouter)
 app.use("/api/products", productsRouter)
 app.use("/chat", chatRouter)
 app.use("/api/sessions", AuthRouter)
+app.use("/api/mock", mockRouter)
+
 
 
 

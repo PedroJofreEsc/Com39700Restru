@@ -48,4 +48,11 @@ export default class ProductManager {
 
   }
 
+  updateQty = async (id, qty) => {
+    const update = await productModel.findOneAndUpdate({ _id: id },
+      { $set: { "stock": qty } })
+    return update
+
+  }
+
 }

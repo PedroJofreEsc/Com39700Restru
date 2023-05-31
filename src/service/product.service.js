@@ -8,10 +8,10 @@ class ProductService {
         return products
     }
 
-    static create = async (title, description, price, code, status, stock, category, thumbnails) => {
+    static create = async (data) => {
         console.log("create")
 
-        const result = await productManager.create({ title, description, price, code, status, stock, category, thumbnails })
+        const result = await productManager.create(data)
 
         return result
     }
@@ -29,8 +29,6 @@ class ProductService {
     static updateById = async (id, campo) => {
         const result = await productManager.updateProduct(id, campo)
     }
-
-
 
 
 }

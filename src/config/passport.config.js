@@ -14,7 +14,6 @@ const initializedPassport = () => {
         {//extraer token
             jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
             secretOrKey: option.server.secretToken
-
         },
         async (jwt_payload, done) => {
             try {
@@ -32,14 +31,11 @@ const initializedPassport = () => {
             passReqToCallback: true
         },
         async (req, username, password, done) => {
-            console.log("pasport")
+
             try {
                 const { first_name, last_name, email, age } = req.body;
                 const user = await UserModel.findOne({ email: username });
-
-
-
-                const admin = /@coder.com/
+                const admin = new RegExp(option.admin.adminEmail)
                 const isAdmin = admin.test(email)
                 let rol
                 if (isAdmin) {
@@ -119,9 +115,12 @@ export { initializedPassport }
 
 
 export const cookieExtractor = (req) => {
+
     let token = null;
     if (req && req.cookies) {
-        token = req.cookies[options.server.cookieToken]
+
+        token = req.cookies[option.server.cookieToken]
     }
+
     return token
 }

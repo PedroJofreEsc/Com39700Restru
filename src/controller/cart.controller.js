@@ -1,4 +1,6 @@
 import { CartService } from "../service/cart.service.js";
+import { TicketService } from "../service/ticket.service.js";
+import { option } from "../config/option.js";
 
 class CartController {
 
@@ -27,6 +29,7 @@ class CartController {
             const { cid } = req.params
 
             const cart = await CartService.getById(cid)
+            console.log(cart)
             res.status(200).send({ status: "ok", payload: cart })
         } catch (error) {
             res.status(400).send({ status: "Error", payload: error })
@@ -75,6 +78,22 @@ class CartController {
 
         res.send(updateCart)
 
+    }
+    static finishPurchase = async (req, res) => {
+        try {
+            const { cid } = req.params
+
+            const buyer = req.user.email
+
+
+            const ticket = await CartService.purchase(cid, buyer)
+            res.send({ status: "ok", payload: ticket })
+
+        } catch (error) {
+            res.status(400).send({ status: "error", payload: " error al generar la compra" })
+            console.log(error)
+        }
+        //revisar 
     }
 
     /*  static updateCart = async (req, res) => {

@@ -11,7 +11,7 @@ export const errorHandler = (error, req, res, next) => {
             break;
         case EError.INVALID_PARAM:
             console.log("error middleware")
-            res.json({ status: "error", error: error.message })
+            res.json({ status: "error", error: error.cause })
             break;
 
         case EError.ROL_ERROR:

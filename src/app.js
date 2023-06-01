@@ -48,7 +48,7 @@ app.use(cookieParser());
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
-app.use(errorHandler)
+
 //routes
 app.use("/", viewRouter)
 app.use("/api/carts", cartsRouter)
@@ -56,7 +56,7 @@ app.use("/api/products", productsRouter)
 app.use("/chat", chatRouter)
 app.use("/api/sessions", AuthRouter)
 app.use("/api/mock", mockRouter)
-
+app.use(errorHandler)
 
 
 
@@ -108,3 +108,4 @@ io.on("connection", (socket) => {
     // }, 1000);
    */});
 //autentificacion github datos app
+app.use(errorHandler)

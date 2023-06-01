@@ -19,7 +19,8 @@ class ProductController {
         res.send(products)
     }
 
-    static addProduct = async (req, res) => {
+    static addProduct = async (req, res, next) => {
+
         const productDto = new CreateProductDto(req.body)
 
         //chequear parametros correctos
@@ -51,12 +52,13 @@ class ProductController {
         }
 
         if (expectedParam.length > 0) {
-            CustomError.createError({
-                name: "Product create error",
-                cause: generateParamErrorInfo(badParam, expectedParam),
-                message: "error a crear producto",
-                errorCode: EError.INVALID_PARAM,
-            })
+            next(
+                CustomError.createError({
+                    name: "Product create error",
+                    cause: generateParamErrorInfo(badParam, expectedParam),
+                    message: "error a crear producto",
+                    errorCode: EError.INVALID_JSON,
+                }))
 
         }
 

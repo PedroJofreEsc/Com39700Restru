@@ -2,7 +2,7 @@ import { UserService } from "../service/user.service.js";// falta agregar la par
 import passport from "passport";
 import { createHash, isValidPassword } from "../utils.js";
 import jwt from "jsonwebtoken"
-
+import transporter from "../config/gmail.js";
 import UserManager from "../dao/db-managers/user.manager.js";
 const userManager = new UserManager()
 import { option } from "../config/option.js";
@@ -79,6 +79,19 @@ class UserController {
                     { expiresIn: "24h" }
                 )
 
+                ////una vez creado enviar correo
+                const emailTemplate = `<div>
+                    <h1>Bienvenido ${userCreated.first_name} ${userCreated.last_name}  </h1>
+                    <p>Ya puedes iniciar sesións con tu correo ${userCreated.email} </p>
+            </div>`
+                const contenido = await transporter.sendMail({
+                    from: "ecomerce backend",
+                    to: option.email.testEmail,
+                    subject: "Registro exitoso",
+                    html: emailTemplate
+                })
+                console.log(contenido)
+                ////////////respuesta
                 res.cookie(option.server.cookieToken, token, {
                     httpOnly: true
                 }).send({ status: "ok", payload: userCreated })

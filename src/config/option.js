@@ -16,6 +16,12 @@ const EMAIL_PASS = process.env.EMAIL_PASS
 
 const TEST_EMAIL = process.env.TEST_EMAIL
 
+const TWILIO_ID = process.env.TWILIO_ID
+const TWILIO_TOKEN = process.env.TWILIO_TOKEN
+const TWILIO_PHONE = process.env.TWILIO_PHONE
+
+const TEST_TWILIO = process.env.TEST_TWILIO
+
 export const option = {
 
     mongoDB: {
@@ -34,5 +40,11 @@ export const option = {
         gmailEmail: GMAIL_EMAIL,
         emailPass: EMAIL_PASS,
         testEmail: TEST_EMAIL
+    },
+    twilio: {
+        twilioID: TWILIO_ID,
+        twilioToken: TWILIO_TOKEN,
+        twilioPhone: TWILIO_PHONE,
+        testTwilio: TEST_TWILIO
     }
 }

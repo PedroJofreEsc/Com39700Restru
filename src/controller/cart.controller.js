@@ -1,6 +1,7 @@
 import { CartService } from "../service/cart.service.js";
 import { TicketService } from "../service/ticket.service.js";
 import { option } from "../config/option.js";
+import { twilioClient, twilioPhone } from "../config/twilio.js";
 
 class CartController {
 
@@ -87,6 +88,14 @@ class CartController {
 
 
             const ticket = await CartService.purchase(cid, buyer)
+
+            ///////twilio 
+            const message = await twilioClient.messages.create({
+                body: `compra realizada su ticket es ${ticket.code}`,
+                from: twilioPhone,
+                to: option.twilio.test
+            })
+
             res.send({ status: "ok", payload: ticket })
 
         } catch (error) {

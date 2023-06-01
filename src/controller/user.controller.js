@@ -7,6 +7,7 @@ import UserManager from "../dao/db-managers/user.manager.js";
 const userManager = new UserManager()
 import { option } from "../config/option.js";
 import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
+import { twilioClient, twilioPhone } from "../config/twilio.js";
 
 class UserController {
 
@@ -91,6 +92,13 @@ class UserController {
                     html: emailTemplate
                 })
                 console.log(contenido)
+                //////////////twilio
+                const message = await twilioClient.messages.create({
+                    body: ``,
+                    from: twilioPhone
+                })
+
+
                 ////////////respuesta
                 res.cookie(option.server.cookieToken, token, {
                     httpOnly: true

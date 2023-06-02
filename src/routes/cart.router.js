@@ -15,12 +15,16 @@ cartsRouter.get("/:cid", CartController.getCartById);
 
 cartsRouter.delete("/:cid", CartController.dropCartyById)
 
-cartsRouter.post("/:cid/product/:pid", authenticate("authJWT"), rolCheck("user"), CartController.putProductInCart)
-cartsRouter.put("/:cid/product/:pid", authenticate("authJWT"), rolCheck("user"), CartController.updateProductInCart)
+//cartsRouter.post("/:cid/product/:pid", authenticate("authJWT"), rolCheck("user"), CartController.putProductInCart)
+//cartsRouter.put("/:cid/product/:pid", authenticate("authJWT"), rolCheck("user"), CartController.updateProductInCart)
 
 cartsRouter.delete("/:cid/product/:pid", CartController.deleteProductInCart)
 
 cartsRouter.get("/:cid/purchase", authenticate("authJWT"), CartController.finishPurchase)
+
+///test sin auth
+cartsRouter.post("/:cid/product/:pid", authenticate("authJWT"), CartController.putProductInCart)
+cartsRouter.put("/:cid/product/:pid", authenticate("authJWT"), CartController.updateProductInCart)
 
 //nuevos endpoint
 

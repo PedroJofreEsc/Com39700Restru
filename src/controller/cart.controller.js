@@ -17,9 +17,11 @@ class CartController {
     }
 
     static createCart = async (req, res) => {
+        console.log("cart controller")
         try {
+            console.log("cart controller")
             const result = await CartService.create()
-
+            console.log(result)
             res.status(200).send({ status: "ok", payload: result })
         } catch (error) {
             res.status(400).send({ status: "error", payload: error })
@@ -90,11 +92,11 @@ class CartController {
             const ticket = await CartService.purchase(cid, buyer)
 
             ///////twilio 
-            const message = await twilioClient.messages.create({
-                body: `compra realizada su ticket es ${ticket.code}`,
-                from: twilioPhone,
-                to: option.twilio.test
-            })
+            //const message = await twilioClient.messages.create({
+            //    body: `compra realizada su ticket es ${ticket.code}`,
+            //    from: twilioPhone,
+            //    to: option.twilio.test
+            //})
 
             res.send({ status: "ok", payload: ticket })
 

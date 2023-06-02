@@ -12,7 +12,7 @@ class CartService {
     }
 
     static create = async () => {
-        const result = await cartManager.create({ product: [] })
+        const result = await cartManager.create()
         return result
     }
 
@@ -91,13 +91,13 @@ class CartService {
                     return new Error("carro vacio")
                 }
 
-                //actualizar carrito 
+                //actualizar stock en carrito y stock
                 console.log("actualizar carro")
                 for (let i = 0; i < cartIdProducts.length; i++) {
                     console.log(i)
-                    //const updateCart = await cartManager.updateCartById(id, cartIdProducts[i], cartQuantity[i])
+                    const updateCart = await cartManager.updateCartById(id, cartIdProducts[i], cartQuantity[i])
 
-                    const updateProduct = await productManager.updateQty(cartIdProducts[i], productsQty[i])
+                    //const updateProduct = await productManager.updateQty(cartIdProducts[i], productsQty[i])
 
                 }
                 //actualizar stock

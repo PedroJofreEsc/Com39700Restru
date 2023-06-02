@@ -21,7 +21,7 @@ class ProductController {
 
     static addProduct = async (req, res, next) => {
 
-        const productDto = new CreateProductDto(req.body)
+        const productDto = await ProductService.create(req.body)
 
         //chequear parametros correctos
         let badParam = {}

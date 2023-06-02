@@ -93,10 +93,11 @@ class UserController {
                 })
                 console.log(contenido)
                 //////////////twilio
-                const message = await twilioClient.messages.create({
-                    body: ``,
-                    from: twilioPhone
-                })
+                /*const message = await twilioClient.messages.create({
+                    body: `usuario creado`,
+                    from: twilioPhone,
+                    to:option.twilio.test
+                })*/
 
 
                 ////////////respuesta

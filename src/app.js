@@ -18,6 +18,7 @@ import mockRouter from "./routes/mock.router.js";
 import { errorHandler } from "./midleware/errorHandler.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
+import { addLogger } from "./utils/logger.js";
 
 const app = express()
 const port = option.server.port
@@ -27,7 +28,7 @@ const database = option.mongoDB.url
 app.use(express.json())
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
-
+app.use(addLogger)
 
 //session
 app.use(session({

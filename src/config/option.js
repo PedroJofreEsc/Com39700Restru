@@ -22,6 +22,8 @@ const TWILIO_PHONE = process.env.TWILIO_PHONE
 
 const TEST_TWILIO = process.env.TEST_TWILIO
 
+const ENTORNO = process.env.ENTORNO
+
 export const option = {
 
     mongoDB: {
@@ -46,5 +48,8 @@ export const option = {
         twilioToken: TWILIO_TOKEN,
         twilioPhone: TWILIO_PHONE,
         testTwilio: TEST_TWILIO
+    },
+    entorno: {
+        entorno: ENTORNO
     }
 }

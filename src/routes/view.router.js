@@ -81,5 +81,16 @@ router.get("/perfil", async (req, res) => {
     res.redirect("/login")
 });
 
+/////logger
+router.get("/loggerTest", async (req, res) => {
+    req.logger.debug("Nivel debug");
+    req.logger.http("Nivel http");
+    req.logger.info("Nivel info");
+    req.logger.warning("Nivel warning");
+    req.logger.error("Nivel error");
+    req.logger.fatal("Nivel fatal");
+    res.send("Test de Logger")
+})
+
 
 export default router

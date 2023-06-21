@@ -13,6 +13,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 const GMAIL_EMAIL = process.env.GMAIL_EMAIL
 const EMAIL_PASS = process.env.EMAIL_PASS
+const EMAIL_TOKEN = process.env.EMAIL_TOKEN
 
 const TEST_EMAIL = process.env.TEST_EMAIL
 
@@ -41,6 +42,7 @@ export const option = {
     email: {
         gmailEmail: GMAIL_EMAIL,
         emailPass: EMAIL_PASS,
+        emailToken: EMAIL_TOKEN,
         testEmail: TEST_EMAIL
     },
     twilio: {

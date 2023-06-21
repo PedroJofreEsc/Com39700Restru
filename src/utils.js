@@ -1,6 +1,8 @@
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken";
+import { option } from "./config/option.js";
 import { faker, Faker, es, en } from "@faker-js/faker";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +19,20 @@ export const isValidPassword = (user, loginPassword) => {
     return bcrypt.compareSync(loginPassword, user.password);
 }
 
+export const generateEmailToken = (email, time) => {
+    const token = jwt.sign({ email }, option.email.emailToken, { expiresIn: time })
+    return token
+
+}
+
+export const validateEmailToken = (token) => {
+    try {
+        const info = jwt.verify
+    }
+    catch (error) {
+
+    }
+}
 
 ////////////mock
 

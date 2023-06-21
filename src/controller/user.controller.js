@@ -1,6 +1,6 @@
 import { UserService } from "../service/user.service.js";// falta agregar la parte de service
 import passport from "passport";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, isValidPassword, generateEmailToken, validateEmailToken } from "../utils.js";
 import jwt from "jsonwebtoken"
 import transporter from "../config/gmail.js";
 import UserManager from "../dao/db-managers/user.manager.js";
@@ -8,6 +8,8 @@ const userManager = new UserManager()
 import { option } from "../config/option.js";
 import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 import { twilioClient, twilioPhone } from "../config/twilio.js";
+import { sendRecoveryEmail } from "../utils/email.js";
+
 
 class UserController {
 
@@ -110,6 +112,56 @@ class UserController {
             console.log(error.message)
         }
     }
+
+    static forgetPass = async (req, res) => {
+        try {
+            const { email } = req.body
+
+            const user = userManager.getUserEmail(email)
+
+            if (user) {
+                const token = generateEmailToken(email, 10 * 60)
+
+                await sendRecoveryEmail(email, token)
+
+                res.send(`<div> Se envio un correo para restablecer la contraseña</div>`)
+            }
+            else {
+                res.send(`<div> Error , <a href="/reset-password">intente de nuevo </a> </div>`)
+            }
+
+        }
+        catch (error) {
+            res.send(`<div> Error al resetear la contraseña, <a href="/reset-password">intente de nuevo </a> </div>`)
+        }
+    }
+
+    static resetPass = async (req, res) => {
+        try {
+            const token = req.query.token
+            const { email, password } = req.body
+            //validar token
+            if (validateEmailToken(token) == email) {
+                const user = await UserManager.getUserEmail(email)
+                //chequear si clave es la misma
+                if (isValidPassword(password, user)) {
+                    res.send("no puedes usar una contraseña ya utilizada")
+                } else {
+                    const newPass = createHash(password)
+                    const update = await UserManager.updatePass(email, newPass)
+                    res.render("login", { message: "contraseña actualizada" })
+                }
+
+            } else {
+                return res.send(`"token invalido o vencido, genere un nuevo token <a href="/forgot-password" > resetear contraseña </a>`)
+            }
+        }
+        catch (error) {
+            res.send(error.message)
+        }
+    }
+
+
 
     static github = passport.authenticate("githubSignup", { scope: ["user:email"] }, async (req, res) => {
 

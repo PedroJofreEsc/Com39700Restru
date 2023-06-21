@@ -20,5 +20,11 @@ export default class UserManager {
         } catch (error) { return error }
     }
 
+    updatePass = async (email, newPass) => {
+        const user = UserModel.findOne({ email: email })
+        const updateUser = { ...user, password: newPass }
+        const update = await UserModel.findOneAndUpdate({ email: email }, updateUser)
+    }
+
 
 }

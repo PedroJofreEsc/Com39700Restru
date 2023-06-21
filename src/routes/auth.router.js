@@ -27,6 +27,10 @@ router.post("/login", UserController.logIn)
 
 router.post("/logout", UserController.logOut)
 
+router.post("/forgot-password", UserController.resetPass)
+
+router.post("/reset-password")
+
 //crear vista
 router.post("/forgot", async (req, res) => {
     try {

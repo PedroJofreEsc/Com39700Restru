@@ -22,7 +22,7 @@ export default class UserManager {
 
     updatePass = async (email, newPass) => {
         const user = UserModel.findOne({ email: email })
-        const updateUser = { ...user, password: newPass }
+        const updateUser = { ...user._doc, password: newPass }
         const update = await UserModel.findOneAndUpdate({ email: email }, updateUser)
     }
 

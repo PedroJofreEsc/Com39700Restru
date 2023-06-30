@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
+import { UserModel } from "./user.model.js";
+
+export const ProductModel = "products"
 
 const productSchema = new mongoose.Schema({
     title: {
@@ -36,10 +39,15 @@ const productSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel,
+        default: "admin"
+    }
 })
 
 productSchema.plugin(mongoosePaginate)
 
-const productModel = mongoose.model("products", productSchema)
+const productModel = mongoose.model(ProductModel, productSchema)
 
 export default productModel

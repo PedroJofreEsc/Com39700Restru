@@ -1,0 +1,241 @@
+path:
+  /api/carts:
+    get:
+      summary: Obtener todos los carritos 
+      tags:
+        - cart
+      responses:
+        "200":
+          description: carros obtenidos con exito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#components/schemas/cart"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        post:
+      summary: Crea un carro vacio 
+      tags:
+        - cart
+      responses:
+        "200":
+          description: carro agregado con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string 
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: agrega una unidad del producto pid al carrito cid
+      tags: 
+        - cart
+      responses:
+        "200":
+          description: producto pid agregado con exito al carrito cid
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+        "401":
+          description: error permisos insuficientes
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+    put:
+      summary: agrega una cantidad x de unidades del producto pid al carro cid
+      tags:
+        - cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productQuantity:
+                  type: number 
+      responses: 
+        "200":
+          description: agregadas x cantidades del producto pid con exito al carrito cid
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+        "401":
+          description: error permisos insuficientes
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+    delete:
+      summary: elimina el producto pid del carro cid
+      tags:
+        - cart
+      responses: 
+        "200":
+          description: eliminado el producto pid con exito del carro cid
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+  /api/carts/{cid}:
+    get:
+      summary: Devuelve el carro cid
+      tags: 
+        - cart
+      responses:
+      "200":
+        description: carro devuelto con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+      "500":
+        description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+    delete:
+      summary: elimina el carro cid de la base
+      tags:
+        - cart
+      responses:
+        "200":
+          description: carro eliminado con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/cart"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+
+components:
+  schema:
+    cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado del carro
+        products:
+          type: array
+          description: productos agregados al carro con su cantidad
+      example:
+        _id: ObjectId("qwertrt556")
+        products: [{_id: ObjectId("qweerffsc"),quantity: 2},{_id: ObjectId("fhffj554"),quantity: 4}]

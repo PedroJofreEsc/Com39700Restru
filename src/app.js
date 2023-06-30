@@ -19,10 +19,17 @@ import { errorHandler } from "./midleware/errorHandler.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
 import { addLogger } from "./utils/logger.js";
+import { connectDB } from "./utils/connectDB.js";
+import { swaggerSpecs } from "./config/docConfig.js";
+import swaggerUI from "swagger-ui-express"
 
 const app = express()
 const port = option.server.port
 const database = option.mongoDB.url
+
+//donde ver la documentacion
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));//endpoint para ver la documentacion 
+
 
 //middlewares
 app.use(express.json())
@@ -60,12 +67,12 @@ app.use("/api/mock", mockRouter)
 app.use(errorHandler)
 
 
-
-mongoose.connect(database)
+connectDB()
+/* mongoose.connect(database)
   .then((conn) => {
     console.log("conectado a DB")
   })
-
+ */
 const httpServer = app.listen(port, () => {
   console.log("Server listening on port 8080");
 });

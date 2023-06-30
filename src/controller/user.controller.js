@@ -161,7 +161,29 @@ class UserController {
         }
     }
 
+    static changePremium = async (req, res) => {
+        try {
+            const userId = req.params.UserId
+            const user = await UserManager.getUserId(userId)
+            const userRol = user.role
+            if (userRol === "user") {
+                user.role = "premium"
+            } else if (userRol === "premium") {
+                user.role = "user"
+            } else {
+                return res.json({ status: "error", payload: "este tipo de usuario no permite cambio de rol" })
+            }
 
+            await userManager.updateRol(user._id, user.role)
+            res.send({ status: "success", payload: "rol actualizado" })
+
+
+        }
+        catch (error) {
+            console.log(error.message)
+            res.json({ status: "error", payload: "no se pudo cambiar el rol" })
+        }
+    }
 
     static github = passport.authenticate("githubSignup", { scope: ["user:email"] }, async (req, res) => {
 

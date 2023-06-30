@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const userCollection = "users";
+export const userCollection = "users";
 
 const userSchema = new mongoose.Schema({
     first_name: String,
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         require: true,
-        enum: ["user", "admin"]
+        enum: ["user", "admin", "premium"]
 
     }
 });

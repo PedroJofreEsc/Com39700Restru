@@ -26,5 +26,12 @@ export default class UserManager {
         const update = await UserModel.findOneAndUpdate({ email: email }, updateUser)
     }
 
+    updateRol = async (id, newRol) => {
+        const user = UserModel.findOne({ _id: id })
+        const updateUser = { ...user._doc, role: newRol }
+        const update = await UserModel.findOneAndUpdate({ _id: id }, updateUser)
+
+    }
+
 
 }

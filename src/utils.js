@@ -27,10 +27,12 @@ export const generateEmailToken = (email, time) => {
 
 export const validateEmailToken = (token) => {
     try {
-        const info = jwt.verify
+        const info = jwt.verify(token, option.email.emailToken)
+        return info.email
     }
     catch (error) {
-
+        console.log(error.message)
+        return null
     }
 }
 

@@ -7,6 +7,7 @@ import { UserController } from "../controller/user.controller.js";
 import { option } from "../config/option.js";
 import jwt from "jsonwebtoken";
 import UserManager from "../dao/db-managers/user.manager.js";
+import { rolCheck } from "../midleware/rolCheck.js";
 const userManager = new UserManager()
 
 //passport
@@ -27,26 +28,10 @@ router.post("/login", UserController.logIn)
 
 router.post("/logout", UserController.logOut)
 
-router.post("/forgot-password", UserController.resetPass)
+router.post("/forgot-password", UserController.forgetPass)
 
-router.post("/reset-password")
+router.post("/reset-password", UserController.resetPass)
 
-//crear vista
-router.post("/forgot", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await UserModel.findOne({ email: email });
-        if (user) {
-            user.password = createHash(password);
-            const userUpdate = await UserModel.findOneAndUpdate({ email: user.email }, user);
-            res.send("contraseña actualizada");
-        } else {
-            req.send("El usuario no esta registrado")
-        }
-    } catch (error) {
-        res.send("No se pudo restaurar la contraseña")
-    }
-});
-
+router.post("/premium/:uid", rolCheck(["admin"]), UserController.changePremium)
 
 export default router

@@ -21,8 +21,8 @@ class ProductController {
 
     static addProduct = async (req, res, next) => {
 
-        const productDto = await ProductService.create(req.body)
-
+        const productDto = (req.body)
+        productDto.owner = req.user._id
         //chequear parametros correctos
         let badParam = {}
         let expectedParam = []
@@ -96,10 +96,25 @@ class ProductController {
 
     static deleteProduct = async (req, res) => {
 
-        const { pid } = (req.params);
+
         try {
-            const deleteProduct = await ProductService.deleteById(pid)
-            res.send({ status: "ok", payload: deleteProduct })
+
+            const { pid } = (req.params);
+            const product = await ProductService.getById(pid)
+            const idOwner = JSON.parse(JSON.stringify(product.owner))
+            const userId = JSON.parse(JSON.stringify(req.user._id))
+            if (product) {
+                if ((req.user.role === "premium" && idOwner === userId) || req.user.role === "admin") {
+                    const deleteProduct = await ProductService.deleteById(pid)
+                    res.send({ status: "ok", payload: deleteProduct })
+                }
+                else {
+                    res.json({ satuts: "error", payload: "no puedes borrar este producto" })
+                }
+            } else {
+                return res.send({ status: "error", payload: "id de producto no existe" })
+            }
+
         } catch (error) {
             res.status(400).send({ status: "error", payload: error })
         }

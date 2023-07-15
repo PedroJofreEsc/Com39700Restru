@@ -22,13 +22,14 @@ const TWILIO_TOKEN = process.env.TWILIO_TOKEN
 const TWILIO_PHONE = process.env.TWILIO_PHONE
 
 const TEST_TWILIO = process.env.TEST_TWILIO
-
+const TEST_URL = process.env.TEST_URL
 const ENTORNO = process.env.ENTORNO
 
 export const option = {
 
     mongoDB: {
         url: MONGO_URL,
+        testUrl: TEST_URL
     },
     server: {
         port: PORT,
@@ -52,6 +53,7 @@ export const option = {
         testTwilio: TEST_TWILIO
     },
     entorno: {
-        entorno: ENTORNO
+        entorno: ENTORNO,
+
     }
 }

@@ -9,6 +9,7 @@ import { option } from "../config/option.js";
 import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 import { twilioClient, twilioPhone } from "../config/twilio.js";
 import { sendRecoveryEmail } from "../utils/email.js";
+import { UserModel } from "../dao/models/user.model.js";
 
 
 class UserController {
@@ -33,6 +34,9 @@ class UserController {
                         role: user.role
                     },
                         option.server.secretToken, { expiresIn: "24h" });
+                    const date = new Date()
+                    user.last_connection = date
+                    const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
                     return res.cookie(option.server.cookieToken, token, {
                         httpOnly: true
                     }).redirect("/products");
@@ -59,6 +63,7 @@ class UserController {
             if (user) {
                 res.send("usuario ya creado porfavor logearse")
             } else {
+
                 let role
                 const admin = new RegExp(option.admin.adminEmail)
                 const isAdmin = admin.test(userDto.email)
@@ -69,6 +74,7 @@ class UserController {
                     role = "user"
                 }
                 userDto.role = role
+                userDto.avatar = req.file.path
                 userDto.password = createHash(userDto.password)
 
                 const userCreated = await userManager.addUser(userDto)
@@ -110,6 +116,43 @@ class UserController {
         } catch (error) {
             res.send({ staus: "error", payload: "error al registrarse" })
             console.log(error.message)
+        }
+    }
+
+    static uploadDocuments = async (req, res) => {
+        try {
+            const userId = req.params.uid
+            const user = await userManager.getUserId(userId)
+            if (user) {
+                //const docs = req.files.map(doc => ({ name: doc.originalname, reference: doc.filename }))
+                const identificacion = req.files['identificacion']?.[0] || null;
+                const domicilio = req.files['domicilio']?.[0] || null;
+                const estadodecuenta = req.files['estadodecuenta']?.[0] || null;
+                const doc = []
+                if (identificacion) { doc.push({ name: "identificacion", reference: identificacion.filename }) }
+
+                if (identificacion) { doc.push({ name: "domicilio", reference: domicilio.filename }) }
+
+                if (estadodecuenta) { doc.push({ name: "estadodecuenta", reference: estadodecuenta.filename }) }
+
+                if (doc.length === 3) {
+                    user.status = "completo"
+                } else {
+                    user.status = "incompleto"
+                }
+                user.documents = doc
+                const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
+                res.json({ status: "sucess", payload: "documentos actualizados" })
+            }
+            else {
+                res.json({ status: "error", message: "hubo un error al cargar los documentos" })
+
+            }
+
+        }
+        catch (error) {
+            console.log(error)
+            res.json({ status: "error", message: "hubo un error al cargar los documentos" })
         }
     }
 
@@ -166,6 +209,9 @@ class UserController {
             const userId = req.params.UserId
             const user = await UserManager.getUserId(userId)
             const userRol = user.role
+            if (user.documents.length < 3 && user.status !== "completo") {
+                return res.json({ status: "error", payload: "El usuario no ha subido todo los documentos" })
+            }
             if (userRol === "user") {
                 user.role = "premium"
             } else if (userRol === "premium") {
@@ -199,6 +245,12 @@ class UserController {
     }
 
     static logOut = async (req, res, next) => {
+        const token = req.cookies
+        const info = jwt.verify(Object.values(token)[0], option.server.secretToken)
+        const user = await userManager.getUserEmail(info.email)
+        user.last_connection = new date()
+        const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
+
         res.clearCookie(option.server.cookieToken).send("cleared")
     }
 

@@ -8,10 +8,13 @@ import { option } from "../config/option.js";
 import jwt from "jsonwebtoken";
 import UserManager from "../dao/db-managers/user.manager.js";
 import { rolCheck } from "../midleware/rolCheck.js";
+
+import { uploaderProfile } from "../utils.js";
+import { checkAuthenticated } from "../midleware/checkAuthenticated.js";
 const userManager = new UserManager()
 
 //passport
-router.post("/signup", UserController.signUp)
+router.post("/signup", uploaderProfile.single("avatar"), UserController.signUp)
 
 
 
@@ -33,5 +36,7 @@ router.post("/forgot-password", UserController.forgetPass)
 router.post("/reset-password", UserController.resetPass)
 
 router.post("/premium/:uid", rolCheck(["admin"]), UserController.changePremium)
+
+router.post("/:uid/documents", checkAuthenticated, uploaderProfile.fields([{ name: "identificacion", maxCount: 1 }, { name: "domicilio", maxCount: 1 }, { name: "estadodecuenta", maxCount: 1 }]), UserController.uploadDocuments)
 
 export default router

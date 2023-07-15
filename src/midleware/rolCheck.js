@@ -1,7 +1,3 @@
-import UserManager from "../dao/db-managers/user.manager.js"
-
-const userManager = new UserManager()
-
 const rolCheck = (role) => {
     return async (req, res, next) => {
         if (!req.user) {

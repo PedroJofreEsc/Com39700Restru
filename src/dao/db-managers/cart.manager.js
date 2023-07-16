@@ -13,9 +13,9 @@ export default class CartManager {
     return result;
   };
 
-  create = async (cart) => {
+  create = async () => {
 
-    const result = cartModel.create(cart)
+    const result = cartModel.create({})
     return result
 
   }
@@ -73,12 +73,16 @@ export default class CartManager {
   }
 
   updateCartById = async (cid, pid, qty) => {
-    const cart = await cartModel.findById(cid).lean()
-    console.log(cart.products)
+    const cart = await cartModel.findById(cid)
+    console.log("cartmanager updatecartbyid")
+    console.log(cart)
+
     for (let index = 0; index < cart.products.length; index++) {
 
-      if (cart.products[index]._id.valueOf() == pid) {
+      if (cart.products[index]._id == pid) {
+        console.log(pid)
         cart.products[index].quantity = qty;
+        console.log(cart)
         await cart.save();
         return await cartModel.findById(cid)
       };

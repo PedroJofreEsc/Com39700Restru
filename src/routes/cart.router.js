@@ -22,6 +22,10 @@ cartsRouter.delete("/:cid/product/:pid", CartController.deleteProductInCart)
 
 cartsRouter.get("/:cid/purchase", authenticate("authJWT"), CartController.finishPurchase)
 
+///test sin auth
+//cartsRouter.post("/:cid/product/:pid", authenticate("authJWT"), CartController.putProductInCart)
+//cartsRouter.put("/:cid/product/:pid", authenticate("authJWT"), CartController.updateProductInCart)
+
 //nuevos endpoint
 
 //cartsRouter.put("/:cid",CartController.updateCart)

@@ -1,5 +1,6 @@
 export const generateParamErrorInfo = (param = {}, expectedParam = {}, valueParam = {}) => {
     const qtyError = Object.keys(param).length
+    console.log(qtyError)
     let msgError = ''
     for (let i = 0; i < qtyError; i++) {
         const paramError = `El parametro ${Object.keys(param)[i]} debe ser ${expectedParam[i]}, pero se obtuvo ${valueParam[i]},  `

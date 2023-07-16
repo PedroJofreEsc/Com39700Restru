@@ -18,16 +18,24 @@ import mockRouter from "./routes/mock.router.js";
 import { errorHandler } from "./midleware/errorHandler.js";
 import { initializedPassport } from "./config/passport.config.js";
 import { option } from './config/option.js'
+import { addLogger } from "./utils/logger.js";
+import { connectDB } from "./utils/connectDB.js";
+import { swaggerSpecs } from "./config/docConfig.js";
+import swaggerUI from "swagger-ui-express"
 
 const app = express()
 const port = option.server.port
 const database = option.mongoDB.url
 
+//donde ver la documentacion
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));//endpoint para ver la documentacion 
+
+
 //middlewares
 app.use(express.json())
 app.use(urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../public"));
-
+app.use(addLogger)
 
 //session
 app.use(session({
@@ -48,7 +56,7 @@ app.use(cookieParser());
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
-app.use(errorHandler)
+
 //routes
 app.use("/", viewRouter)
 app.use("/api/carts", cartsRouter)
@@ -56,15 +64,15 @@ app.use("/api/products", productsRouter)
 app.use("/chat", chatRouter)
 app.use("/api/sessions", AuthRouter)
 app.use("/api/mock", mockRouter)
+app.use(errorHandler)
 
 
-
-
-mongoose.connect(database)
+connectDB()
+/* mongoose.connect(database)
   .then((conn) => {
     console.log("conectado a DB")
   })
-
+ */
 const httpServer = app.listen(port, () => {
   console.log("Server listening on port 8080");
 });
@@ -108,3 +116,4 @@ io.on("connection", (socket) => {
     // }, 1000);
    */});
 //autentificacion github datos app
+app.use(errorHandler)

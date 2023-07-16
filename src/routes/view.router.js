@@ -81,5 +81,26 @@ router.get("/perfil", async (req, res) => {
     res.redirect("/login")
 });
 
+router.get("/reset-password", async (req, res) => {
+    const token = req.query.token
+    res.render("resetPassword", { token })
+
+})
+router.get("/restablecer", async (req, res) => {
+    res.render("restablecer")
+
+})
+
+/////logger
+router.get("/loggerTest", async (req, res) => {
+    req.logger.debug("Nivel debug");
+    req.logger.http("Nivel http");
+    req.logger.info("Nivel info");
+    req.logger.warning("Nivel warning");
+    req.logger.error("Nivel error");
+    req.logger.fatal("Nivel fatal");
+    res.send("Test de Logger")
+})
+
 
 export default router

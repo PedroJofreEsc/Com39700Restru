@@ -12,7 +12,7 @@ class CartService {
     }
 
     static create = async () => {
-        const result = await cartManager.create({ product: [] })
+        const result = await cartManager.create()
         return result
     }
 
@@ -91,19 +91,16 @@ class CartService {
                     return new Error("carro vacio")
                 }
 
-                //actualizar carrito 
-                console.log("actualizar carro")
+                //actualizar stock en carrito y stock
+
                 for (let i = 0; i < cartIdProducts.length; i++) {
-                    console.log(i)
-                    //const updateCart = await cartManager.updateCartById(id, cartIdProducts[i], cartQuantity[i])
+
+                    const updateCart = await cartManager.updateCartById(id, cartIdProducts[i], cartQuantity[i])
 
                     const updateProduct = await productManager.updateQty(cartIdProducts[i], productsQty[i])
 
                 }
-                //actualizar stock
-                for (let i = 0; i < outProducts.length; i++) {
 
-                }
                 //crear ticket 
                 const ticket = ticketmanager.createTicket(price, buyer)
                 return ticket

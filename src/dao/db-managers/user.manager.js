@@ -20,5 +20,18 @@ export default class UserManager {
         } catch (error) { return error }
     }
 
+    updatePass = async (email, newPass) => {
+        const user = UserModel.findOne({ email: email })
+        const updateUser = { ...user._doc, password: newPass }
+        const update = await UserModel.findOneAndUpdate({ email: email }, updateUser)
+    }
+
+    updateRol = async (id, newRol) => {
+        const user = UserModel.findOne({ _id: id })
+        const updateUser = { ...user._doc, role: newRol }
+        const update = await UserModel.findOneAndUpdate({ _id: id }, updateUser)
+
+    }
+
 
 }

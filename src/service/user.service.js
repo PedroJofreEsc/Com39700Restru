@@ -18,7 +18,7 @@ class UserService {
     }
 
     static logIn = async (email, password) => {
-        const user = userManager.getUserEmail(email)
+        const user = await userManager.getUserEmail(email)
         if (user) {
             //chequear password
             if (isValidPassword(user, password)) {

@@ -1,0 +1,281 @@
+paths:
+  /api/products:
+    description: este path relaciona todo lo que afecta la lista de productos de forma global 
+
+    get:
+      summary: Obtener todos los productos 
+      tags:
+        - Productos
+      responses: 
+        "200": 
+          description: todos los productos se obtuvieron correctamente 
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#components/schemas/products"
+        "401":
+          description: error permisos insuficientes
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description:  error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string 
+    post:
+      summary: crear un nuevo producto
+      tags: 
+        - Productos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                payload: 
+                  $ref: "#components/requestBodies/addProduct"
+      responses:
+        "200":
+          description: producto creado con exito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status:
+                    type: string
+                  payload: 
+                    $ref: "#components/schemas/products"
+        "401":
+          description: error permisos insuficientes
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description:  error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+  /api/products{pid}:
+    get:
+      summary: devuelve el producto con el _id de pid
+      tags:
+        - productos
+      responses:
+        "200":
+          description: producto devuelto con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/products"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+    delete:
+      summary: elimina el producto con _id igual a pid de la base 
+      tags:
+        - productos
+      responses:
+        "200":
+          description: producto eliminado con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/products"
+        "401":
+          description: error permisos insuficientes
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+    put:
+      summary: actualiza los valores del producto con _id igual a pid
+      tag:
+        - productos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                payload: 
+                  $ref: "#components/requestBodies/addProduct"
+      responses:
+        "200":
+          description: producto eliminado con exito
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/products"
+        "401":
+          description: error permiso insuficiente
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+
+      
+components:
+  schemas:
+    products:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: id del producto autogenerado por la base de datos
+        title:
+          type: string 
+          description: nombre del producto
+        description:
+          type: string 
+          description: descripcion del producto
+        code:
+          type: string 
+          description: codigo del producto
+        price:
+          type: number
+          description: precio del producto
+        status:
+          type: boolean
+          description: indica si el producto esta activo
+        stock:
+          type: number
+          description: cantidad disponible del producto
+        category:
+          type: string 
+          description: nombre de la categoria a la que pertenece el producto
+        thumbnails:
+          type: arreglo de string
+          description: arreglo de las direccion url de las imagenes del producto
+        owner:
+          type: ObjectId 
+          description: Id del creador del producto
+      example: 
+        _id: ObjectId('asdfwef672134jda')
+        title: manzana
+        description: 1 manzana
+        code: asdeq
+        price: 1234
+        status: true
+        stock: 5
+        category: fruta
+        thumbails: []
+        owner: ObjectId('qwqeeqw1233rddd')
+  requestBodies:
+    addProduct:
+      type: object
+      properties:
+        title:
+          type: string 
+          description: nombre del producto
+        description:
+          type: string 
+          description: descripcion del producto
+        code:
+          type: string 
+          description: codigo del producto
+        price:
+          type: number
+          description: precio del producto
+        stock:
+          type: number
+          description: cantidad disponible del producto
+        category:
+          type: string 
+          description: nombre de la categoria a la que pertenece el producto
+      example:
+        title: manzana
+        description: 1 manzana
+        code: asdeq
+        price: 1234
+        status: true
+        stock: 5
+        category: fruta

@@ -52,6 +52,11 @@ class UserService {
         return result
     }
 
+    static getAll = async () => {
+        const users = await userManager.getAll()
+        return users
+    }
+
     // static create = async(data)
 }
 

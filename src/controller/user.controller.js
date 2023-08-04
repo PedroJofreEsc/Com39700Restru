@@ -10,6 +10,7 @@ import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 import { twilioClient, twilioPhone } from "../config/twilio.js";
 import { sendRecoveryEmail } from "../utils/email.js";
 import { UserModel } from "../dao/models/user.model.js";
+import { ConversationListInstance } from "twilio/lib/rest/conversations/v1/conversation.js";
 
 
 class UserController {
@@ -252,6 +253,43 @@ class UserController {
         const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
 
         res.clearCookie(option.server.cookieToken).send("cleared")
+    }
+
+    static getUserInfo = async (req, res) => {
+        try {
+            const users = await UserService.getAll()
+            const UsersInfo = users.map(u => {
+                return {
+                    Name: u.first_name + ' ' + u.last_name,
+                    Email: u.email,
+                    Rol: u.role
+                }
+            })
+            res.send({ status: "ok", payload: UsersInfo })
+
+        } catch (error) {
+            console.log(error.message)
+            res.send({ status: "error", payload: "No se puede obtener los usuarios" })
+        }
+    }
+
+    static inactiveUser = async (req, res) => {
+        try {
+            const users = await UserService.getAll()
+            const timeUser = users.map(u => {
+                return {
+                    id: u._id,
+                    LastConnection: u.last_connection,
+                    dias: Math.trunc((new Date() - u.last_connection) / 24 / 60 / 60 / 1000)
+                }
+            })
+            const oldUser = timeUser.filter(u => u.dias > 2
+            )
+            res.send({ status: "ok", payload: oldUser })
+        } catch (error) {
+            console.log(error.message)
+            res.send({ status: "error", payload: "No se puede obtener los usuarios" })
+        }
     }
 
 }

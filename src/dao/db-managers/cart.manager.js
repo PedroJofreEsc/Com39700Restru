@@ -20,6 +20,16 @@ export default class CartManager {
 
   }
 
+  deleteById = async (id) => {
+    const cart = cartModel.findByIdAndDelete(id)
+    return cart
+  }
+
+  deleteByUser = async (user) => {
+    const cart = cartModel.deleteMany()
+    return cart
+  }
+
   getCartById = async (id) => {
 
     const result = await cartModel.find({ _id: id }).lean()

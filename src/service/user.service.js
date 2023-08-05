@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import { createHash, isValidPassword } from "../utils.js";
 import { option } from '../config/option.js'
 import passport from "passport";
+import transporter from "../config/gmail.js";
 const userManager = new UserManager()
 
 class UserService {
@@ -55,6 +56,18 @@ class UserService {
     static getAll = async () => {
         const users = await userManager.getAll()
         return users
+    }
+
+    static sendEmail = async (email, message, subject) => {
+        const emailTemplate = message
+
+        const contenido = await transporter.sendMail({
+            from: "ecomerce backend",
+            to: email,
+            subject: subject,
+            html: emailTemplate
+        })
+
     }
 
     // static create = async(data)

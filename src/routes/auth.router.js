@@ -42,9 +42,8 @@ router.post("/:uid/documents", checkAuthenticated, uploaderProfile.fields([{ nam
 //Ultima entrega 
 
 router.get("/", UserController.getUserInfo)
-router.delete("/", UserController.inactiveUser)
 
-//router.delete("/", rolCheck(["admin"]), UserController.inactiveUser)
+router.delete("/", rolCheck(["admin"]), UserController.inactiveUser)
 
 
 export default router

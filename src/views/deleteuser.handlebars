@@ -1,0 +1,23 @@
+<h2>Eliminar usuario</h2>
+<p>Usuarios registrado</p>
+
+<a href="/adminconsole"> volver a la consola</a>
+
+
+<div>
+
+    {{#each users}}
+    <ul>
+        <li>nombre:{{first_name}} {{last_name}} </li>
+        <li>email:{{email}} </li>
+        <li>rol:{{role}} </li>
+        <li>ultima conexion : LastConnection</li>
+        <li>Dias ultima conexion:{{dias}} </li>
+        <li>id: {{id}} </li>
+    </ul>
+
+    {{/each}}
+    <form method="delete" action="http://localhost:8080/api/sessions/">
+        <button type="submit">eliminar usuarios inactivos</button>
+    </form>
+</div>

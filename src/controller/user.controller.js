@@ -258,17 +258,25 @@ class UserController {
         res.clearCookie(option.server.cookieToken).send("cleared")
     }
 
-    static getUserInfo = async (req, res) => {
+    static deleteUserByEmail = async (req, res) => {
         try {
-            const users = await UserService.getAll()
-            const UsersInfo = users.map(u => {
-                return {
-                    Name: u.first_name + ' ' + u.last_name,
-                    Email: u.email,
-                    Rol: u.role
+            const user = UserService.deleteUserEmail(req.email)
+            res.send({
+                status: "ok", payload: {
+                    mensaje: "usuario eliminado con exito",
+                    usuario: user
                 }
             })
-            res.send({ status: "ok", payload: UsersInfo })
+        } catch (error) {
+            console.log(error)
+            res.send({ status: "error", payload: "no se pudo eliminar el usuario" })
+        }
+    }
+
+    static getUserInfo = async (req, res) => {
+        try {
+            const usersInfo = await UserService.getAllInfo()
+            res.send({ status: "ok", payload: usersInfo })
 
         } catch (error) {
             console.log(error.message)
@@ -278,20 +286,8 @@ class UserController {
 
     static inactiveUser = async (req, res) => {
         try {
-            const users = await UserService.getAll()
-            const timeUser = users.map(u => {
-                return {
-                    id: u._id,
-                    first_name: u.first_name,
-                    last_name: u.last_name,
-                    LastConnection: u.last_connection,
-                    cart: u.cart,
-                    dias: Math.trunc((new Date() - u.last_connection) / 24 / 60 / 60 / 1000),
-                    email: u.email
-                }
-            })
-            const oldUser = timeUser.filter(u => u.dias > 2
-            )
+            const oldUser = await UserService.getAllInactive()
+
             const userDelete = await oldUser.forEach(u => {
                 userManager.deleteUser(u.id)
                 u.cart.forEach(c => {

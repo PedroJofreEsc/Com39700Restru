@@ -39,6 +39,8 @@ router.post("/premium/:uid", rolCheck(["admin"]), UserController.changePremium)
 
 router.post("/:uid/documents", checkAuthenticated, uploaderProfile.fields([{ name: "identificacion", maxCount: 1 }, { name: "domicilio", maxCount: 1 }, { name: "estadodecuenta", maxCount: 1 }]), UserController.uploadDocuments)
 
+router.delete("/:uid", rolCheck(["admin"]), UserController)
+
 //Ultima entrega 
 
 router.get("/", UserController.getUserInfo)

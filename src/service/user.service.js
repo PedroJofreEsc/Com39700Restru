@@ -58,6 +58,18 @@ class UserService {
         return users
     }
 
+    static getAllInfo = async () => {
+        const users = await this.getAll()
+        const usersInfo = users.map(u => {
+            return {
+                Name: u.first_name + ' ' + u.last_name,
+                Email: u.email,
+                Rol: u.role
+            }
+        })
+        return usersInfo
+    }
+
     static sendEmail = async (email, message, subject) => {
         const emailTemplate = message
 
@@ -70,6 +82,34 @@ class UserService {
 
     }
 
+    static getUserEmail = async (email) => {
+        const user = UserManager.getUserEmail(email)
+        return user
+    }
+
+    static deleteUserEmail = async (email) => {
+        const user = this.getUserEmail(email)
+        const deleteUser = userManager.deleteUser(user._id)
+        return deleteUser
+    }
+
+    static getAllInactive = async () => {
+        const users = await UserService.getAll()
+        const timeUser = users.map(u => {
+            return {
+                id: u._id,
+                first_name: u.first_name,
+                last_name: u.last_name,
+                LastConnection: u.last_connection,
+                cart: u.cart,
+                dias: Math.trunc((new Date() - u.last_connection) / 24 / 60 / 60 / 1000),
+                email: u.email
+            }
+        })
+        const oldUser = timeUser.filter(u => u.dias > 2
+        )
+        return oldUser
+    }
     // static create = async(data)
 }
 

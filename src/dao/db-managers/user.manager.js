@@ -33,5 +33,17 @@ export default class UserManager {
 
     }
 
+    getAll = async () => {
+        const users = UserModel.find()
+
+        return users
+    }
+
+    deleteUser = async (id) => {
+        const user = UserModel.findByIdAndDelete(id)
+        return user
+
+    }
+
 
 }

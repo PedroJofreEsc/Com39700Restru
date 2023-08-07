@@ -2,6 +2,8 @@ import { Router } from "express";
 import CartManager from "../dao/db-managers/cart.manager.js";
 import ProductManager from "../dao/db-managers/product.manager.js";
 import { UserModel } from '../dao/models/user.model.js';
+import { rolCheck } from "../midleware/rolCheck.js";
+import { viewController } from "../controller/view.controller.js";
 
 const router = Router();
 const cartManager = new CartManager()
@@ -91,6 +93,12 @@ router.get("/restablecer", async (req, res) => {
 
 })
 
+//entrega final
+router.get("/adminconsole", viewController.adminConsole)
+
+router.get("/adminconsole/getusers", viewController.getUsers)
+
+router.get("/adminconsole/deleteuser", viewController.deleteUser)
 /////logger
 router.get("/loggerTest", async (req, res) => {
     req.logger.debug("Nivel debug");

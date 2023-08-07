@@ -43,6 +43,13 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
         default: ""
+    },
+    cart: {
+        type: [{
+            type: mongoose.Types.ObjectId,
+            ref: "carts"
+        }],
+        default: []
     }
 
 });

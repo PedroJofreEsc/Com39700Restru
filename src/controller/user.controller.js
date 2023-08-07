@@ -10,6 +10,8 @@ import { CreateUserDto, GetUserDto } from '../dao/dto/user.dto.js'
 import { twilioClient, twilioPhone } from "../config/twilio.js";
 import { sendRecoveryEmail } from "../utils/email.js";
 import { UserModel } from "../dao/models/user.model.js";
+import { ConversationListInstance } from "twilio/lib/rest/conversations/v1/conversation.js";
+import CartManager from "../dao/db-managers/cart.manager.js";
 
 
 class UserController {
@@ -89,16 +91,18 @@ class UserController {
                 )
 
                 ////una vez creado enviar correo
+                const subject = "Registro exitoso"
                 const emailTemplate = `<div>
                     <h1>Bienvenido ${userCreated.first_name} ${userCreated.last_name}  </h1>
                     <p>Ya puedes iniciar sesións con tu correo ${userCreated.email} </p>
             </div>`
-                const contenido = await transporter.sendMail({
-                    from: "ecomerce backend",
-                    to: option.email.testEmail,
-                    subject: "Registro exitoso",
-                    html: emailTemplate
-                })
+                UserService.sendEmail(option.email.testEmail, emailTemplate, subject)
+                //const contenido = await transporter.sendMail({
+                //    from: "ecomerce backend",
+                //    to: option.email.testEmail,
+                //    subject: "Registro exitoso",
+                //    html: emailTemplate
+                //})
                 console.log(contenido)
                 //////////////twilio
                 /*const message = await twilioClient.messages.create({
@@ -252,6 +256,56 @@ class UserController {
         const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
 
         res.clearCookie(option.server.cookieToken).send("cleared")
+    }
+
+    static deleteUserByEmail = async (req, res) => {
+        try {
+            const user = UserService.deleteUserEmail(req.email)
+            res.send({
+                status: "ok", payload: {
+                    mensaje: "usuario eliminado con exito",
+                    usuario: user
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            res.send({ status: "error", payload: "no se pudo eliminar el usuario" })
+        }
+    }
+
+    static getUserInfo = async (req, res) => {
+        try {
+            const usersInfo = await UserService.getAllInfo()
+            res.send({ status: "ok", payload: usersInfo })
+
+        } catch (error) {
+            console.log(error.message)
+            res.send({ status: "error", payload: "No se puede obtener los usuarios" })
+        }
+    }
+
+    static inactiveUser = async (req, res) => {
+        try {
+            const oldUser = await UserService.getAllInactive()
+
+            const userDelete = await oldUser.forEach(u => {
+                userManager.deleteUser(u.id)
+                u.cart.forEach(c => {
+                    CartManager.deleteById(c)
+                })
+                const emailTemplate = `<div>
+                    <h1>Hola ${u.first_name} ${u.last_name}  </h1>
+                    <p>Su cuenta a sido eliminada por inactividad, puede volver a crear su usuario en la pagina de sign up </p>
+                    </div>`
+                const subject = "Eliminado por inactividad"
+                UserService.sendEmail(option.email.testEmail, emailTemplate, subject)
+
+            })
+            res.send({ status: "ok", payload: "usuarios eliminados y notificados" })
+        } catch (error) {
+            console.log(error.message)
+            res.send({ status: "error", payload: "No se puede obtener los usuarios" })
+        }
     }
 
 }

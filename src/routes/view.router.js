@@ -99,6 +99,9 @@ router.get("/adminconsole", viewController.adminConsole)
 router.get("/adminconsole/getusers", viewController.getUsers)
 
 router.get("/adminconsole/deleteuser", viewController.deleteUser)
+
+router.get("/adminconsole/changerol", viewController.changeRol)
+
 /////logger
 router.get("/loggerTest", async (req, res) => {
     req.logger.debug("Nivel debug");

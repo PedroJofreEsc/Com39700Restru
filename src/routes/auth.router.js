@@ -11,6 +11,7 @@ import { rolCheck } from "../midleware/rolCheck.js";
 
 import { uploaderProfile } from "../utils.js";
 import { checkAuthenticated } from "../midleware/checkAuthenticated.js";
+import { authenticate } from "../midleware/authenticate.js";
 const userManager = new UserManager()
 
 //passport
@@ -35,7 +36,7 @@ router.post("/forgot-password", UserController.forgetPass)
 
 router.post("/reset-password", UserController.resetPass)
 
-router.post("/premium/:uid", rolCheck(["admin"]), UserController.changePremium)
+router.post("/premium/:uid", authenticate("authJWT"), rolCheck(["admin"]), UserController.changePremium)
 
 router.post("/:uid/documents", checkAuthenticated, uploaderProfile.fields([{ name: "identificacion", maxCount: 1 }, { name: "domicilio", maxCount: 1 }, { name: "estadodecuenta", maxCount: 1 }]), UserController.uploadDocuments)
 

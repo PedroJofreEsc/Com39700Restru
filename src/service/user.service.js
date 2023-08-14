@@ -64,7 +64,8 @@ class UserService {
             return {
                 Name: u.first_name + ' ' + u.last_name,
                 Email: u.email,
-                Rol: u.role
+                Rol: u.role,
+                Id: u._id
             }
         })
         return usersInfo

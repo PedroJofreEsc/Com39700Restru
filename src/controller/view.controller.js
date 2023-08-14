@@ -28,6 +28,12 @@ class viewController {
         res.render("deleteuser", { users })
     }
 
+    static changeRol = async (req, res) => {
+        const users = await UserService.getAllInfo()
+        console.log(users)
+        res.render("changerol", { users })
+    }
+
 }
 
 export { viewController }

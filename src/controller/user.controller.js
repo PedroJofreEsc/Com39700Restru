@@ -103,7 +103,7 @@ class UserController {
                 //    subject: "Registro exitoso",
                 //    html: emailTemplate
                 //})
-                console.log(contenido)
+                //console.log(contenido)
                 //////////////twilio
                 /*const message = await twilioClient.messages.create({
                     body: `usuario creado`,
@@ -210,8 +210,8 @@ class UserController {
 
     static changePremium = async (req, res) => {
         try {
-            const userId = req.params.UserId
-            const user = await UserManager.getUserId(userId)
+            const userId = req.params.uid
+            const user = await userManager.getUserId(userId)
             const userRol = user.role
             if (user.documents.length < 3 && user.status !== "completo") {
                 return res.json({ status: "error", payload: "El usuario no ha subido todo los documentos" })

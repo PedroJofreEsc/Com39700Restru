@@ -252,10 +252,10 @@ class UserController {
         const token = req.cookies
         const info = jwt.verify(Object.values(token)[0], option.server.secretToken)
         const user = await userManager.getUserEmail(info.email)
-        user.last_connection = new date()
+        user.last_connection = new Date()
         const userUpdate = await UserModel.findByIdAndUpdate(user._id, user)
 
-        res.clearCookie(option.server.cookieToken).send("cleared")
+        res.clearCookie(option.server.cookieToken).render("login")
     }
 
     static deleteUserByEmail = async (req, res) => {

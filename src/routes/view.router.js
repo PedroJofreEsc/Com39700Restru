@@ -4,6 +4,7 @@ import ProductManager from "../dao/db-managers/product.manager.js";
 import { UserModel } from '../dao/models/user.model.js';
 import { rolCheck } from "../midleware/rolCheck.js";
 import { viewController } from "../controller/view.controller.js";
+import { authenticate } from "../midleware/authenticate.js";
 
 const router = Router();
 const cartManager = new CartManager()
@@ -41,26 +42,11 @@ router.get("/carts/:cid", async (req, res) => {
 });
 
 //login view
-router.get("/", async (req, res) => {
-    const email = req.session.user
-    if (email) {
-
-        const user = await UserModel.findOne({ email: email }).lean()
-        return res.render("home", { user });
-    }
-    res.redirect("/login")
-});
-
-router.get("/login", (req, res) => {
-    const email = req.session.user
-
-    if (email) {
-        return res.send("session ya iniciada")
-    }
+router.get("/", viewController.home)
 
 
-    res.render("login");
-});
+router.get("/login", viewController.login)
+
 
 router.get("/signup", (req, res) => {
     const email = req.session.user
@@ -71,17 +57,8 @@ router.get("/signup", (req, res) => {
     res.render("signup");
 });
 
-router.get("/perfil", async (req, res) => {
+router.get("/perfil", viewController.perfil)
 
-    const email = req.session.user
-    if (email) {
-        const user = await UserModel.findOne({ email: email }).lean()
-        const rol = req.session.rol
-
-        return res.render("perfil", { user, rol });
-    }
-    res.redirect("/login")
-});
 
 router.get("/reset-password", async (req, res) => {
     const token = req.query.token
